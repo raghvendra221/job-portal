@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Recruiter Signup - Job Portal{% endblock %}
+
+{% block content %}
+<h2>Recruiter Signup</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign Up</button>
+</form>
+<p>Already have an account? <a href="#">Login</a></p>
+<p>Want to sign up as Seeker? <a href="#">Click here</a></p>
+{% endblock %}

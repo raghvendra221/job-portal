@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Job Portal{% endblock %}</title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
+</head>
+<body>
+    <header>
+        <h1>JobPortal</h1>
+        <nav>
+            {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
+                <a href="#">Logout</a>
+            {% comment %} {% else %} {% endcomment %}
+                <a href="#">Login</a>
+                <a href="#">Sign Up Seeker</a>
+                <a href="#">Sign Up Recruiter</a>
+            {% comment %} {% endif %} {% endcomment %}
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
