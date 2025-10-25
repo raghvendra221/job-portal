@@ -1,19 +1,16 @@
-{% extends "account/base.html" %}
-{% block title %}Home - Job Portal{% endblock %}
-
+{% extends 'account/base.html' %}
+{% load static %}
+{% block title %}Welcome to Job Portal{% endblock %}
 {% block content %}
-<h2>Welcome to JobPortal</h2>
-<p>Choose your role to sign up:</p>
-
-<div>
-    <a href="#">Sign Up as Job Seeker</a>
-</div>
-
-<div>
-    <a href="#">Sign Up as Recruiter</a>
-</div>
-
-<div>
-    <a href="#">Already have an account? Login</a>
-</div>
+<section class="hero-section d-flex align-items-center text-center">
+  <div class="container">
+    <h1 class="display-4 fw-bold text-light">Find Your Dream Job Today</h1>
+    <p class="text-light lead">Join thousands of recruiters and job seekers connecting every day</p>
+    <div class="mt-4">
+      <a href="{% url 'login' %}" class="btn btn-light btn-lg me-3">Login</a>
+      <a href="{% url 'seeker_signup' %}" class="btn btn-outline-light btn-lg me-3">Job Seeker Signup</a>
+      <a href="{% url 'recruiter_signup' %}" class="btn btn-outline-light btn-lg">Recruiter Signup</a>
+    </div>
+  </div>
+</section>
 {% endblock %}

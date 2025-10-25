@@ -1,13 +1,28 @@
-{% extends "base.html" %}
+
+ {% extends "account/base.html" %}
+
 {% block title %}Recruiter Signup - Job Portal{% endblock %}
 
+{% block body_class %}login-page{% endblock %}  <!-- apply login page background -->
+
 {% block content %}
-<h2>Recruiter Signup</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
-</form>
-<p>Already have an account? <a href="#">Login</a></p>
-<p>Want to sign up as Seeker? <a href="#">Click here</a></p>
-{% endblock %}
+<div class="form-container">
+  <h3 class="text-center mb-4">Recruiter Signup</h3>
+  <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        {% comment %} {{ field.label_tag }} {% endcomment %}
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+      <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+  </form>
+  
+  <p>Already have an account? <a href="{% url 'login'%}">Login</a></p>
+  <p>Want to sign up as Seeker? <a href="{% url 'seeker_signup'%}">Click here</a></p>
+</div>
+{% endblock %} 

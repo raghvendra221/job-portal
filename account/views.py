@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from account.forms import SeekerSignUpForm, RecruiterSignUpForm, LoginForm
@@ -13,6 +14,7 @@ def seeker_signup_view(request):
         form = SeekerSignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Account created successfully! Please login.")
             return redirect('login')
     else:
         form = SeekerSignUpForm()
@@ -24,6 +26,7 @@ def recruiter_signup_view(request):
         form = RecruiterSignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Recruiter account created successfully! Please login.")
             return redirect('login')
     else:
         form = RecruiterSignUpForm()
@@ -37,12 +40,14 @@ def login_view(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             user = authenticate(request, email=email, password=password)
-            if user:
+            if user is not None:
                 login(request, user)
                 if user.is_recruiter:
                     return redirect('recruiter-dashboard')
                 else:
                     return redirect('seeker-dashboard')
+            else:
+                messages.error(request,"Invalid email or password")
     else:
         form = LoginForm()
     return render(request, 'account/login.html', {'form': form})
@@ -51,6 +56,7 @@ def login_view(request):
 @login_required
 def logout_view(request):
     logout(request)
+    messages.success(request, "You have been logged out.")
     return redirect('login')
 
 # Dashboards
