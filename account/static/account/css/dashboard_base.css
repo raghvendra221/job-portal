@@ -1,0 +1,165 @@
+/* ===== Navbar ===== */
+.custom-navbar {
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  padding: 0.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.custom-navbar .navbar-brand {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.custom-navbar .navbar-brand:hover {
+  color: #ffd700;
+  transform: scale(1.1);
+}
+
+.custom-navbar .nav-link {
+  color: #f8f9fa !important;
+  font-weight: 500;
+  margin-left: 20px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.custom-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background: #ffd700;
+  left: 0;
+  bottom: 0;
+  transition: width 0.3s ease;
+}
+
+.custom-navbar .nav-link:hover {
+  color: #ffd700 !important;
+  transform: scale(1.1);
+}
+
+.custom-navbar .nav-link:hover::after {
+  width: 100%;
+}
+
+/* ===== Dashboard Layout ===== */
+.dashboard-container {
+  display: flex;
+  margin-top: 70px; /* space for fixed navbar */
+  min-height: calc(100vh - 70px);
+  background: #f4f6fc; /* soft professional background */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #fff;
+  padding: 1.5rem 1rem;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+  border-right: 1px solid #e0e0e0; /* thin line between sidebar and main content */
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 1rem;
+}
+
+.sidebar-menu a {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: #333;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Dashboard Main Content */
+.dashboard-content {
+  flex: 1;
+  padding: 2rem;
+  background: #f4f6fc;
+  min-height: 100vh;
+  color: #333;
+  transition: background 0.3s ease;
+}
+
+/* ===== Job Cards ===== */
+.job-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.job-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.3s ease, transform 0.3s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.job-card h5 {
+  color: #0d6efd;
+}
+
+.job-card p {
+  color: #555;
+  margin: 0.3rem 0;
+}
+
+.job-actions .btn {
+  margin-top: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.job-actions .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* ===== Professional Color Scheme ===== */
+.dashboard-content h2 {
+  color: #0d6efd;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-menu a i {
+  color: #0d6efd;
+  margin-right: 8px;
+}
+
+.sidebar-menu a.active i {
+  color: #fff;
+}
+
+/* Thin line separator already added */

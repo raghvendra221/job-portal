@@ -1,12 +1,39 @@
-{% extends "base.html" %}
-{% block title %}Seeker Dashboard - Job Portal{% endblock %}
+{% extends 'account/dashboard_base.html' %}
+{% block title %}Seeker Dashboard{% endblock %}
 
-{% block content %}
-<h2>Seeker Dashboard</h2>
-<p>Welcome, {{ request.user.name }}!</p>
+{% block sidebar_links %}
+<li class="nav-item"><a class="nav-link active" href="#">Available Jobs</a></li>
+<li class="nav-item"><a class="nav-link" href="{% url 'my_applications'%}">My Applications</a></li>
+{% endblock %}
 
-<div>
-    <h3>Available Jobs</h3>
-    <p>No jobs posted yet.</p>
+{% block dashboard_content %}
+<h2 class="mb-4">Welcome, {{ user.username }}</h2>
+
+<!-- Available Jobs -->
+<h4>Available Jobs</h4>
+{% if jobs %}
+<div class="row">
+  {% for job in jobs %}
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ job.title }}</h5>
+        <p class="card-text">{{ job.description|truncatewords:20 }}</p>
+        <p><strong>Location:</strong> {{ job.location }}</p>
+        <p><strong>Salary:</strong> ₹{{ job.salary }}</p>
+        <p><strong>Experience Required:</strong> {{ job.experience_required }} yrs</p>
+        <form method="post" action="{% url 'apply_job' job.id %}">
+          {% csrf_token %}
+          <button class="btn btn-primary btn-sm">Apply Now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
+{% else %}
+<p>No jobs available at the moment.</p>
+{% endif %}
+
+
 {% endblock %}

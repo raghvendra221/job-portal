@@ -1,0 +1,128 @@
+{% comment %} {% extends "account/base.html" %}
+{% block title %}Activate Your Account{% endblock title %}
+
+{% block content %}
+<div class="container-glass">
+  <div class="glass activation-container mx-auto text-center">
+    <h3 class="mb-4">🚀 Activate Your Account</h3>
+    <p class="mb-4">
+      Thank you for registering! Please click the button below to activate your account and get started.
+    </p>
+
+    <a href="#" class="btn btn-accent btn-lg mb-3" id="activateBtn">
+      Activate Account
+      <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+    </a>
+
+    <p class="mb-2">
+      Already activated? <a href="{% url 'login' %}">Sign In</a>
+    </p>
+
+    <p class="small mt-3">
+      If you encounter any issues, please contact us at 
+      <a href="mailto:support@example.com">support@example.com</a>
+    </p>
+  </div>
+</div> {% endcomment %}
+
+{% comment %} <script>
+const activateBtn = document.getElementById('activateBtn');
+const spinner = document.getElementById('spinner');
+
+activateBtn.addEventListener('click', function() {
+    spinner.classList.remove('d-none');
+    activateBtn.style.pointerEvents = 'none'; // disable further clicks
+});
+</script> {% endcomment %}
+{% comment %} {% endblock content %} {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Activate Your Account | Auth System</title>
+  <style>
+    body {
+      background-color: #f4f4f7;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333333;
+    }
+    .email-wrapper {
+      width: 100%;
+      padding: 30px 0;
+      background-color: #f4f4f7;
+    }
+    .email-content {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .email-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .email-header h2 {
+      color: #1a73e8;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .email-body {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444444;
+    }
+    .activation-btn {
+      display: inline-block;
+      margin: 25px 0;
+      padding: 12px 25px;
+      background-color: #1a73e8;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .activation-btn:hover {
+      background-color: #0d5edb;
+    }
+    .email-footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #888888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+    <div class="email-content">
+      <div class="email-header">
+        <h2>Welcome to Auth System 🚀</h2>
+      </div>
+
+      <div class="email-body">
+        <p>Hello {{ user.name }},</p>
+
+        <p>Thank you for registering with <strong>Auth System</strong>. To activate your account, please click the button below:</p>
+
+        <div style="text-align:center;">
+          <a href="{{ activation_url }}" class="activation-btn">Activate My Account</a>
+        </div>
+
+        <p>If you didn’t create this account, you can safely ignore this email.</p>
+
+        <p>Best regards,<br>
+        <strong>The Auth System Team</strong></p>
+      </div>
+
+      <div class="email-footer">
+        <p>© {{ year }} Auth System. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

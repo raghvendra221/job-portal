@@ -1,0 +1,39 @@
+from django import forms
+from application.models import Job
+
+class JobForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['title', 'description', 'location', 'salary', 'experience_required']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter job title 📝'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Enter job description 📄'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter location 📍'
+            }),
+            'salary': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter salary 💰'
+            }),
+            'experience_required': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Years of experience 🕒',
+                'min': 0
+            }),
+        }
+
+        labels = {
+            'title': 'Job Title ',
+            'description': 'Job Description ',
+            'location': 'Location ',
+            'salary': 'Salary ',
+            'experience_required': 'Experience Required ',
+        }

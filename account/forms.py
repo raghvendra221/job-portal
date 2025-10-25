@@ -46,7 +46,7 @@ class SeekerSignUpForm(UserCreationForm):
         user = super().save(commit=False)
         user.is_seeker = True
         user.is_recruiter = False
-        user.is_active = True  # Email verification can be added later
+        # user.is_active = True  # Email verification can be added later
         if commit:
             user.save()
         return user
@@ -94,7 +94,7 @@ class RecruiterSignUpForm(UserCreationForm):
         user = super().save(commit=False)
         user.is_recruiter = True
         user.is_seeker = False
-        user.is_active = True   # Email verification can be added later
+          # Email verification can be added later
         if commit:
             user.save()
         return user

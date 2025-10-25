@@ -1,12 +1,34 @@
-{% extends "base.html" %}
-{% block title %}Recruiter Dashboard - Job Portal{% endblock %}
+{% extends 'account/dashboard_base.html' %}
 
-{% block content %}
-<h2>Recruiter Dashboard</h2>
-<p>Welcome, {{ request.user.name }}!</p>
+{% block title %}Recruiter Dashboard{% endblock %}
 
-<div>
-    <h3>Your Posted Jobs</h3>
-    <p>No jobs posted yet.</p>
+{% block sidebar_links %}
+<li><a href="{% url 'recruiter-dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+<li><a href="{% url 'post_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a></li>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="container-fluid">
+  <h3 class="mb-4">My Posted Jobs</h3>
+  {% if jobs %}
+    <div class="job-list">
+      {% for job in jobs %}
+        <div class="job-card">
+          <h5>{{ job.title }}</h5>
+          <p><i class="bi bi-geo-alt"></i> {{ job.location }}</p>
+          <p><i class="bi bi-cash-stack"></i> ₹{{ job.salary }}</p>
+          <p><i class="bi bi-briefcase"></i> Experience: {{ job.experience_required }} yrs</p>
+          <p class="job-desc">{{ job.description|truncatewords:25 }}</p>
+          <div class="job-actions">
+            <a href="#" class="btn btn-primary btn-sm">View Applicants</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>You haven’t posted any jobs yet. <a href="{% url 'post_job' %}">Post a job now.</a></p>
+    </div>
+  {% endif %}
 </div>
 {% endblock %}

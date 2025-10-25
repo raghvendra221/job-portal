@@ -1,0 +1,37 @@
+{% extends 'account/dashboard_base.html' %}
+{% block title %}My application{% endblock %}
+
+ {% block sidebar_links %}
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'seeker-dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link active" href="{% url 'my_applications' %}"><i class="bi bi-briefcase-fill"></i> My Application</a>
+</li>
+{% endblock %} 
+
+{% block dashboard_content %}
+<h2 class="mb-4">My Applications</h2>
+
+{% if applications %}
+<div class="row">
+  {% for app in applications %}
+  <div class="col-md-6">
+    <div class="card border-info shadow-sm mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ app.job.title }}</h5>
+        <p><strong>Status:</strong>
+          <span class="{% if app.status == 'Accepted' %}text-success{% elif app.status == 'Rejected' %}text-danger{% else %}text-warning{% endif %}">
+            {{ app.status }}
+          </span>
+        </p>
+        <p><strong>Applied on:</strong> {{ app.applied_at|date:"M d, Y" }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>You have not applied to any jobs yet.</p>
+{% endif %}
+{% endblock %}

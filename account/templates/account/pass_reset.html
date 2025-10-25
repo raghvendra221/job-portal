@@ -1,0 +1,48 @@
+{% extends "account/base.html" %}
+{% block title %}Reset Password{% endblock title %}
+
+{% block content %}
+<div class="container-glass">
+  <div class="glass reset-container mx-auto">
+    <h3 class="text-center mb-4">🔒 Reset Password</h3>
+
+    <form id="resetForm" method="POST" novalidate>
+      {% csrf_token %}
+      
+      {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <button type="submit" id="sendButton" class="btn btn-accent w-100 mb-3">
+        <span id="buttonText">Send Reset Link</span>
+        <span id="buttonSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+      </button>
+    </form>
+
+    <p class="text-center mt-3 mb-0">
+      Remembered your password? <a href="{% url 'login' %}">Sign In</a>
+    </p>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('resetForm');
+const sendButton = document.getElementById('sendButton');
+const buttonText = document.getElementById('buttonText');
+const buttonSpinner = document.getElementById('buttonSpinner');
+
+form.addEventListener('submit', function(e) {
+  // Show spinner
+  buttonText.textContent = "Sending...";
+  buttonSpinner.classList.remove('d-none');
+  // Optionally disable the button to prevent multiple clicks
+  sendButton.disabled = true;
+});
+</script>
+{% endblock content %}
