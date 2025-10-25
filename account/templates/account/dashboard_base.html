@@ -32,7 +32,7 @@
                   <li class="nav-item"><a class="nav-link" href="{% url 'post_job' %}">Post Job</a></li>
               {% elif user.is_seeker %}
                   <li class="nav-item"><a class="nav-link" href="{% url 'seeker-dashboard' %}">Dashboard</a></li>
-                  <li class="nav-item"><a class="nav-link" href="my_application">My Applications</a></li>
+                  <li class="nav-item"><a class="nav-link" href="{% url 'my_applications'%}">My Applications</a></li>
               {% endif %}
             {% comment %} <li class="nav-item"><a class="nav-link" href="{% url 'recruiter-dashboard' %}">Dashboard</a></li> {% endcomment %}
             

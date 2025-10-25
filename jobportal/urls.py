@@ -9,6 +9,7 @@ urlpatterns = [
     path('', home, name='home'), 
     path('account/', include('account.urls')),
     path('job/', include('job.urls')),
+    path('application/', include('application.urls')),
    
     # path('', TemplateView.as_view(template_name='home.html'),name='home'),#home page using generic view
     

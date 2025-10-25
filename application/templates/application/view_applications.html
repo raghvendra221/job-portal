@@ -1,0 +1,50 @@
+{% extends 'account/dashboard_base.html' %}
+{% block title %}My application{% endblock %}
+
+{% block sidebar_links %}
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/recruiter/dashboard/' %}active{% endif %}" 
+     href="{% url 'recruiter-dashboard' %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/job/post/' %}active{% endif %}" 
+     href="{% url 'post_job' %}">
+    <i class="bi bi-briefcase-fill"></i> Post Job
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/recruiter/view-applications/' %}active{% endif %}" 
+     href="{% url 'view-applications' %}">
+    <i class="bi bi-people-fill"></i> View Applications
+  </a>
+</li>
+{% endblock %}
+
+
+
+{% block dashboard_content %}
+<h2 class="mb-4">Applications for Your Jobs</h2>
+
+{% if applications %}
+<div class="row">
+  {% for app in applications %}
+  <div class="col-md-6">
+    <div class="application-card">
+      <div class="app-header">
+        <h5>{{ app.job.title }}</h5>
+        <span class="status {{ app.status|lower }}">{{ app.status }}</span>
+      </div>
+      <p><strong>Applicant:</strong> {{ app.seeker.name }}</p>
+      <p><strong>Applied on:</strong> {{ app.applied_at|date:"M d, Y" }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>No applications yet.</p>
+{% endif %}
+{% endblock %}

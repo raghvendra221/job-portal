@@ -20,7 +20,7 @@
           <p><i class="bi bi-briefcase"></i> Experience: {{ job.experience_required }} yrs</p>
           <p class="job-desc">{{ job.description|truncatewords:25 }}</p>
           <div class="job-actions">
-            <a href="#" class="btn btn-primary btn-sm">View Applicants</a>
+            <a href="{%url 'view-applications'%}" class="btn btn-primary btn-sm">View Applicants</a>
           </div>
         </div>
       {% endfor %}

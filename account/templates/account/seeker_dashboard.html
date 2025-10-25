@@ -2,8 +2,8 @@
 {% block title %}Seeker Dashboard{% endblock %}
 
 {% block sidebar_links %}
-<li class="nav-item"><a class="nav-link active" href="#">Available Jobs</a></li>
-<li class="nav-item"><a class="nav-link" href="{% url 'my_applications'%}">My Applications</a></li>
+<li class="nav-item"><a class="nav-link active" href="{% url 'seeker-dashboard'%}"><i class="bi bi-speedometer2"></i>Dashboard</a></li>
+<li class="nav-item"><a class="nav-link" href="{% url 'my_applications'%}"><i class="bi bi-plus-circle"></i>My Applications</a></li>
 {% endblock %}
 
 {% block dashboard_content %}
