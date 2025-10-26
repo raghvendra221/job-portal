@@ -12,5 +12,12 @@ class Job(models.Model):
     experience_required = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+        # New Fields — Recruiter’s required credentials
+    require_resume = models.BooleanField(default=True)
+    require_cover_letter = models.BooleanField(default=False)
+    require_portfolio = models.BooleanField(default=False)
+    require_github = models.BooleanField(default=False)
+
     def __str__(self):
         return self.title

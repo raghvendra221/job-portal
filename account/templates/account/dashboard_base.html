@@ -52,7 +52,15 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <ul class="sidebar-menu">
-        {% block sidebar_links %}{% endblock %}
+        {% comment %} {% block sidebar_links %} {% endcomment %}
+        {% if user.is_recruiter %}
+        <li><a href="{% url 'recruiter-dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+        <li><a href="{% url 'post_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a></li>
+        {% elif user.is_seeker %}
+        <li class="nav-item"><a class="nav-link active" href="{% url 'seeker-dashboard'%}"><i class="bi bi-speedometer2"></i>Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'my_applications'%}"><i class="bi bi-plus-circle"></i>My Applications</a></li>
+        {% endif %}
+        {% comment %} {% endblock %} {% endcomment %}
       </ul>
     </aside>
 

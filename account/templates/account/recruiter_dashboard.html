@@ -2,10 +2,10 @@
 
 {% block title %}Recruiter Dashboard{% endblock %}
 
-{% block sidebar_links %}
+{% comment %} {% block sidebar_links %}
 <li><a href="{% url 'recruiter-dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
 <li><a href="{% url 'post_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a></li>
-{% endblock %}
+{% endblock %} {% endcomment %}
 
 {% block dashboard_content %}
 <div class="container-fluid">
@@ -20,7 +20,14 @@
           <p><i class="bi bi-briefcase"></i> Experience: {{ job.experience_required }} yrs</p>
           <p class="job-desc">{{ job.description|truncatewords:25 }}</p>
           <div class="job-actions">
-            <a href="{%url 'view-applications'%}" class="btn btn-primary btn-sm">View Applicants</a>
+            <a href="{%url 'view-applicants' job.id%}" class="btn btn-primary btn-sm">View Applicants</a>
+            <a href="{% url 'edit_job' job.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="{% url 'delete_job' job.id %}" 
+             class="btn btn-sm btn-outline-danger"
+                onclick="return confirm('Are you sure you want to delete this job?');">
+               Delete
+              </a>
+
           </div>
         </div>
       {% endfor %}

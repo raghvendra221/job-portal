@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from account.forms import SeekerSignUpForm, RecruiterSignUpForm, LoginForm
+from application.forms import ApplicationForm
 from account.models import User
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes,force_str
@@ -147,6 +148,7 @@ def seeker_dashboard_view(request):
      
      context = {
         'jobs': jobs,
+        'applied_jobs': applied_jobs,
     }
      return render(request, 'account/seeker_dashboard.html', context)
 
@@ -160,9 +162,24 @@ def my_applications(request):
 
 @login_required
 def apply_job(request, job_id):
-    user=request.user
+    seeker=request.user
     job = get_object_or_404(Job, id=job_id)
+
+    # Prevent duplicate application
+    if Application.objects.filter(seeker=seeker, job=job).exists():
+        messages.warning(request, "You have already applied for this job.")
+        return redirect('seeker-dashboard')
+
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES, job=job)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.seeker = seeker
+            application.job = job
+            application.save()
+            messages.success(request, "Application submitted successfully!")
+            return redirect('seeker-dashboard')
     # Check if already applied
-    if not Application.objects.filter(seeker=user, job=job).exists():
-        Application.objects.create(seeker=request.user, job=job)
-    return redirect('seeker-dashboard')
+    else:
+        form = ApplicationForm(job=job)
+    return render(request, 'application/apply_job.html', {'form': form, 'job': job})

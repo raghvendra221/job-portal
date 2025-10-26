@@ -10,6 +10,4 @@ urlpatterns = [
     path('dashboard/seeker/', seeker_dashboard_view, name='seeker-dashboard'),
     path('apply/<int:job_id>/', apply_job, name='apply_job'),
     path('dashboard/applications/', my_applications, name='my_applications'),
-    # path('dashboard/seeker/', seeker_dashboard_view, name='seeker-dashboard'),
-    # path('dashboard/recruiter/', recruiter_dashboard_view, name='recruiter-dashboard'),
 ]

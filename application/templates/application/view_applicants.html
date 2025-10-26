@@ -17,9 +17,9 @@
 </li>
 
 <li class="nav-item">
-  <a class="nav-link {% if request.path == '/recruiter/view-applications/' %}active{% endif %}" 
-     href="{% url 'view-applications' %}">
-    <i class="bi bi-people-fill"></i> View Applications
+  {% comment %} <a class="nav-link {% if request.path == '/application/view-applicants/' %}active{% endif %}" 
+     href="{% url 'view-applicants' %}"> {% endcomment %}
+     <a href="{% url 'view_applicants' job.id %}" class="btn btn-outline-info btn-sm"><i class="bi bi-people-fill"></i> View Applications
   </a>
 </li>
 {% endblock %}
@@ -27,7 +27,7 @@
 
 
 {% block dashboard_content %}
-<h2 class="mb-4">Applications for Your Jobs</h2>
+<h2 class="mb-4">Applications for Your {{job.title}}</h2>
 
 {% if applications %}
 <div class="row">

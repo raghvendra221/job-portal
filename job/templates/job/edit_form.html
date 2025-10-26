@@ -1,0 +1,11 @@
+{% extends 'account/dashboard_base.html' %}
+{% block title %}Edit Job{% endblock %}
+
+{% block dashboard_content %}
+<h2>Edit Job - {{ job.title }}</h2>
+<form method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success mt-3">Save Changes</button>
+</form>
+{% endblock %}

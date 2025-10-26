@@ -12,6 +12,11 @@ class Application(models.Model):
     status = models.CharField(max_length=10, choices=status_choices, default='Pending')
     applied_at = models.DateTimeField(auto_now_add=True)
 
+    resume = models.FileField(upload_to='resumes/', null=True, blank=True)
+    cover_letter = models.FileField(upload_to='cover_letters/', null=True, blank=True)
+    portfolio = models.URLField(null=True, blank=True)
+    github_link = models.URLField(null=True, blank=True)
+
     def __str__(self):
         return f"{self.seeker.username} - {self.job.title}"
 

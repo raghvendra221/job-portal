@@ -163,3 +163,41 @@
 }
 
 /* Thin line separator already added */
+
+
+/* delete button recruiter dashboard css */
+.card-footer .btn {
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+.card-footer .btn:hover {
+  transform: scale(1.05);
+}
+
+
+
+/* apply form css  */
+.card {
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 600px;
+    margin: auto;
+}
+
+h2 {
+    font-weight: 600;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #0d6efd;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #0b5ed7;
+}

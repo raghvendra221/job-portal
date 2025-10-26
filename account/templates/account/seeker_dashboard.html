@@ -1,4 +1,5 @@
 {% extends 'account/dashboard_base.html' %}
+{% comment %} {% extends 'account/dashboard_base.html' %}
 {% block title %}Seeker Dashboard{% endblock %}
 
 {% block sidebar_links %}
@@ -9,7 +10,7 @@
 {% block dashboard_content %}
 <h2 class="mb-4">Welcome, {{ user.username }}</h2>
 
-<!-- Available Jobs -->
+
 <h4>Available Jobs</h4>
 {% if jobs %}
 <div class="row">
@@ -36,4 +37,54 @@
 {% endif %}
 
 
+{% endblock %} {% endcomment %}
+
+
+
+{% block title %}Seeker Dashboard{% endblock %}
+
+{% block sidebar_links %}
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/dashboard/seeker/' %}active{% endif %}" href="{% url 'seeker-dashboard'%}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/dashboard/applications/' %}active{% endif %}" href="{% url 'my_applications'%}">
+    <i class="bi bi-plus-circle"></i> My Applications
+  </a>
+</li>
 {% endblock %}
+
+{% block dashboard_content %}
+<h2 class="mb-4">Welcome, {{ user.username }}</h2>
+
+<h4>Available Jobs</h4>
+{% if jobs %}
+<div class="row">
+  {% for job in jobs %}
+  <div class="col-md-6">
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ job.title }}</h5>
+        <p class="card-text">{{ job.description|truncatewords:20 }}</p>
+        <p><strong>Location:</strong> {{ job.location }}</p>
+        <p><strong>Salary:</strong> ₹{{ job.salary }}</p>
+        <p><strong>Experience Required:</strong> {{ job.experience_required }} yrs</p>
+
+        {% if job.id in applied_jobs %}
+          <button class="btn btn-secondary btn-sm" disabled>Already Applied</button>
+        {% else %}
+          <a href="{% url 'apply_job' job.id %}" class="btn btn-primary btn-sm">Apply Now</a>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>No jobs available at the moment.</p>
+{% endif %}
+{% endblock %}
+
