@@ -1,4 +1,5 @@
 {% extends 'account/base.html' %}
+{% comment %} {% extends 'account/base.html' %}
 {% block title %}Login{% endblock %}
 {% block body_class %}login-page{% endblock %}
 {% block content %}
@@ -9,7 +10,7 @@
     
     {% for field in form %}
       <div class="mb-3">
-        {% comment %} {{ field.label_tag }} {% endcomment %}
+        
         {{ field }}
         {% if field.errors %}
           <div class="text-danger small">{{ field.errors|striptags }}</div>
@@ -29,4 +30,107 @@
 </p>
   
 </div>
+{% endblock %} {% endcomment %}
+
+{% comment %} {% block title %}Login{% endblock %}
+{% block body_class %}login-page{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  
+  <h3 class="text-center mb-4">Welcome Back 👋</h3>
+  <p class="text-center text-light mb-4" style="opacity:0.9;">
+    Login to continue to your account
+  </p>
+
+ 
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3">
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a href="{% url 'password-reset' %}" class="small text-decoration-none text-light" style="transition: color 0.3s;">
+        Forgot Password?
+      </a>
+    </div>
+
+    
+    <button type="submit" class="btn btn-primary w-100 mb-3">
+      Login
+    </button>
+
+    
+    <div class="text-center text-light my-2" style="opacity:0.8;">
+      — or —
+    </div>
+
+    
+
+    <p class="text-center mt-2">
+      Didn’t get your activation email?
+      <a href="{% url 'resend-activation' %}">Resend activation email</a>
+    </p>
+  </form>
+</div>
+
+{% endblock %} {% endcomment %}
+
+{% block title %}Login{% endblock %}
+{% block body_class %}login-page{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  <h3 class="text-center mb-3">Welcome Back 👋</h3>
+  <p class="text-center text-light mb-4" style="opacity:0.9;">
+    Login to continue to your account
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3">
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger small mt-1">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a href="{% url 'password-reset' %}" class="small text-decoration-none text-light">
+        Forgot Password?
+      </a>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mb-3">
+      Login
+    </button>
+
+    <div class="text-center text-light my-2" style="opacity:0.8;">
+      — or —
+    </div>
+
+    <p class="text-center mt-2">
+      Don't have an account?
+      <br>
+      <a href="{% url 'recruiter_signup' %}">Sign up as Recruiter</a> |
+      <a href="{% url 'seeker_signup' %}">Sign up as Seeker</a>
+    </p>
+
+    <p class="text-center mt-2">
+      Didn’t get the activation email?
+      <a href="{% url 'resend-activation' %}">Resend activation email</a>
+    </p>
+  </form>
+</div>
+
 {% endblock %}
+

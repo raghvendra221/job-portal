@@ -1,0 +1,25 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+.env
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VSCode
+.vscode/
+
+# macOS & Windows
+.DS_Store
+Thumbs.db
+
+# Migrations (optional, keep only if you want clean repo)
+*/migrations/__pycache__/
