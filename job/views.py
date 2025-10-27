@@ -3,13 +3,17 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from job.models import Job
+from application.models import Notification
 from application.models import Application
 from job.forms import JobForm
 from django.contrib import messages
+from core.decorators import role_required
 
 
 # ---------------- Recruiter Views ----------------
-@method_decorator(login_required, name='dispatch')
+
+@method_decorator(role_required('recruiter'), name='dispatch')
+
 class PostJobView(View):
     def get(self, request):
         form = JobForm()
@@ -23,14 +27,26 @@ class PostJobView(View):
             job.save()
             messages.success(request, "Job posted successfully!")
             return redirect('recruiter-dashboard')
-        return render(request, 'job/post_job.html', {'form': form})
+        return render(request, 'job/post_job.html', {'form': form}) 
     
-@login_required
+@role_required('recruiter')
 def recruiter_dashboard_view(request):
-    # Show jobs posted by this recruiter
-    jobs = Job.objects.filter(recruiter=request.user)
-    return render(request, 'account/recruiter_dashboard.html', {'jobs': jobs})
+ 
+    #Fetch unread notifications for the recruiter
+    notifications = Notification.objects.filter(recruiter=request.user, is_read=False).order_by('-created_at')[:10]
+    unread_count = notifications.count()
 
+    # Jobs posted by the recruiter
+    jobs = Job.objects.filter(recruiter=request.user)
+    context={
+        'notifications': notifications, 
+        'unread_count': unread_count,
+        'jobs':jobs
+        }
+
+    return render(request, 'account/recruiter_dashboard.html', context)
+
+@role_required('recruiter') 
 def edit_job(request,job_id):
     job=get_object_or_404(Job,id=job_id,recruiter=request.user)
     if request.method =='POST':
@@ -42,6 +58,7 @@ def edit_job(request,job_id):
         form=JobForm(instance=job)
     return render(request,'job/edit_form.html',{'form':form,'job':job})
 
+@role_required('recruiter')
 def delete_job(request, job_id):
     job = get_object_or_404(Job, id=job_id, recruiter=request.user)
     job.delete()

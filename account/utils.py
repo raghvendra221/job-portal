@@ -1,57 +1,21 @@
 from django.core.mail import EmailMultiAlternatives
+from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-import threading
-
-class SendEmailThread(threading.Thread):
-    def __init__(self,email):
-        self.email=email
-        threading.Thread.__init__(self)
-
-    def run(self):
-        self.email.send()
-
-def send_activation_email(user,activation_url):
-    subject="Activate your account on " + settings.SITE_NAME
-    from_email='no_reply@demomailtrap.co'
-    to_email=[user.email]
-
-    context = {
-        'user': user,
-        'activation_url': activation_url
-    }
 
 
-    #load the HTML template
-    html_content=render_to_string('account/activation_email.html',context)
+def send_custom_email(subject, template_name, context, to_email):
+    from_email = settings.DEFAULT_FROM_EMAIL
 
-    text_content= strip_tags(html_content)
+    html_content = render_to_string(template_name, context)
+    text_content = strip_tags(html_content)
 
-    email=EmailMultiAlternatives(subject,text_content,from_email,to_email)
-
-    email.attach_alternative(html_content,'text/html')
-    SendEmailThread(email).start()
-
-
-
-def send_reset_password_email(user,reset_url):
-    subject="Reset Your Password on " + settings.SITE_NAME
-    from_email='no_reply@demomailtrap.co'
-    to_email=[user.email]
-
-    context = {
-        'user': user,
-        'reset_url': reset_url
-    }
-
-
-    #load the HTML template
-    html_content=render_to_string('account/reset_pass_email.html',context)
-
-    text_content= strip_tags(html_content)
-
-    email=EmailMultiAlternatives(subject,text_content,from_email,to_email)
-
-    email.attach_alternative(html_content,'text/html')
-    SendEmailThread(email).start()
+    email = EmailMultiAlternatives(
+        subject=subject, 
+        body=text_content, 
+        from_email=from_email,
+         to= [to_email],
+         )
+    email.attach_alternative(html_content, 'text/html')
+    email.send()

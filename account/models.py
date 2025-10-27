@@ -24,11 +24,11 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=255, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_recruiter = models.BooleanField(default=False)
-    is_seeker = models.BooleanField(default=True)
+    is_seeker = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

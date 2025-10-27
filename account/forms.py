@@ -112,3 +112,20 @@ class LoginForm(forms.Form):
             'placeholder': '🔒 Password',
             'style': 'background: rgba(28,35,49,0.7); color:#fff; border-radius:8px; border:none; margin-bottom:14px; font-size: 1.08em;'})
     )
+
+
+class PasswordResetForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your registered email'
+        }),
+        label="Email"
+    )
+    def clean_email(self):
+        email=self.cleaned_data.get('email')
+        #check if a user with this exail exist
+        if not User.objects.filter(email=email).exists():
+            raise forms.ValidationError('' \
+            'No account is associated with this email')
+        return email

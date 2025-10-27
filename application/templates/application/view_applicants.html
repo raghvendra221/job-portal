@@ -1,4 +1,5 @@
 {% extends 'account/dashboard_base.html' %}
+{% comment %} {% extends 'account/dashboard_base.html' %}
 {% block title %}My application{% endblock %}
 
 {% block sidebar_links %}
@@ -17,8 +18,7 @@
 </li>
 
 <li class="nav-item">
-  {% comment %} <a class="nav-link {% if request.path == '/application/view-applicants/' %}active{% endif %}" 
-     href="{% url 'view-applicants' %}"> {% endcomment %}
+  
      <a href="{% url 'view_applicants' job.id %}" class="btn btn-outline-info btn-sm"><i class="bi bi-people-fill"></i> View Applications
   </a>
 </li>
@@ -47,4 +47,76 @@
 {% else %}
 <p>No applications yet.</p>
 {% endif %}
+{% endblock %} {% endcomment %}
+
+
+
+{% block title %}Applications for {{ job.title }}{% endblock %}
+
+{% block sidebar_links %}
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/recruiter/dashboard/' %}active{% endif %}" 
+     href="{% url 'recruiter-dashboard' %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/job/post/' %}active{% endif %}" 
+     href="{% url 'post_job' %}">
+    <i class="bi bi-briefcase-fill"></i> Post Job
+  </a>
+</li>
 {% endblock %}
+
+{% block dashboard_content %}
+<h2 class="mb-4 text-center">Applications for "{{ job.title }}"</h2>
+
+{% if applications %}
+<div class="row g-3">
+  {% for app in applications %}
+  <div class="col-md-6">
+    <div class="card shadow-sm p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="card-title mb-0">{{ app.seeker.name }}</h5>
+        <span class="badge 
+          {% if app.status == 'Pending' %}bg-warning
+          {% elif app.status == 'Accepted' %}bg-success
+          {% elif app.status == 'Rejected' %}bg-danger
+          {% endif %}">
+          {{ app.status }}
+        </span>
+      </div>
+
+      <p><strong>Applied On:</strong> {{ app.applied_at|date:"M d, Y" }}</p>
+
+      <div class="mb-2">
+        {% if app.resume %}
+        <a href="{{ app.resume.url }}" class="btn btn-outline-primary btn-sm" target="_blank">Resume</a>
+        {% endif %}
+        {% if app.cover_letter %}
+        <a href="{{ app.cover_letter.url }}" class="btn btn-outline-secondary btn-sm" target="_blank">Cover Letter</a>
+        {% endif %}
+        {% if app.portfolio %}
+        <a href="{{ app.portfolio.url }}" class="btn btn-outline-info btn-sm" target="_blank">Portfolio</a>
+        {% endif %}
+        {% if app.github_link %}
+        <a href="{{ app.github_link }}" class="btn btn-outline-dark btn-sm" target="_blank">GitHub</a>
+        {% endif %}
+      </div>
+
+       <a href="{% url 'update-application-status' app.id %}" class="btn btn-primary btn-sm w-100">
+        Update Status
+      </a> 
+      
+    
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-center">No applications yet for this job.</p>
+{% endif %}
+{% endblock %}
+

@@ -201,3 +201,18 @@ h2 {
 .btn-primary:hover {
     background: #0b5ed7;
 }
+
+/* 
+bell ison css for notification badge */
+.nav-link .bi-bell-fill {
+  transition: color 0.3s ease;
+}
+
+.nav-link .bi-bell-fill:hover {
+  color: #0d6efd;
+}
+
+.badge {
+  font-size: 0.65rem;
+  padding: 0.3em 0.4em;
+}

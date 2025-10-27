@@ -26,3 +26,14 @@ class ApplicationForm(forms.ModelForm):
                 self.fields.pop('portfolio')
             if not job.require_github:
                 self.fields.pop('github_link')
+
+
+
+class ApplicationStatusForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['status']
+        widgets = {
+            'status': forms.Select(attrs={'class': 'form-select'})
+        }
+

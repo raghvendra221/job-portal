@@ -1,4 +1,5 @@
 {% extends 'account/dashboard_base.html' %}
+{% comment %} {% extends 'account/dashboard_base.html' %}
 {% block title %}My application{% endblock %}
 
  {% block sidebar_links %}
@@ -26,6 +27,61 @@
           </span>
         </p>
         <p><strong>Applied on:</strong> {{ app.applied_at|date:"M d, Y" }}</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>You have not applied to any jobs yet.</p>
+{% endif %}
+{% endblock %} {% endcomment %}
+
+
+{% block title %}My Applications{% endblock %}
+
+{% block sidebar_links %}
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/dashboard/seeker/' %}active{% endif %}" href="{% url 'seeker-dashboard' %}">
+    <i class="bi bi-speedometer2"></i> Dashboard
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link {% if request.path == '/dashboard/applications/' %}active{% endif %}" href="{% url 'my_applications' %}">
+    <i class="bi bi-plus-circle"></i> My Applications
+  </a>
+</li>
+{% endblock %}
+
+{% block dashboard_content %}
+<h2 class="mb-4">My Applications</h2>
+
+{% if applications %}
+<div class="row">
+  {% for app in applications %}
+  <div class="col-md-6">
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ app.job.title }}</h5>
+        <p><strong>Status:</strong>
+          <span class="{% if app.status == 'Accepted' %}text-success{% elif app.status == 'Rejected' %}text-danger{% else %}text-warning{% endif %}">
+            {{ app.status }}
+          </span>
+        </p>
+        <p><strong>Applied on:</strong> {{ app.applied_at|date:"M d, Y" }}</p>
+
+        {% if app.resume %}
+          <p><strong>Resume:</strong> <a href="{{ app.resume.url }}" target="_blank">Download</a></p>
+        {% endif %}
+        {% if app.cover_letter %}
+          <p><strong>Cover Letter:</strong> <a href="{{ app.cover_letter.url }}" target="_blank">Download</a></p>
+        {% endif %}
+        {% if app.portfolio %}
+          <p><strong>Portfolio:</strong> <a href="{{ app.portfolio.url }}" target="_blank">View</a></p>
+        {% endif %}
+        {% if app.github_link %}
+          <p><strong>GitHub:</strong> <a href="{{ app.github_link }}" target="_blank">{{ app.github_link }}</a></p>
+        {% endif %}
       </div>
     </div>
   </div>
