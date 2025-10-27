@@ -1,17 +1,18 @@
 {% extends "account/base.html" %}
-{% comment %} {% extends "account/base.html" %}
+{% load static %}
 {% block title %}Set New Password{% endblock title %}
+{% block body_class %}login-page{% endblock %}
 
 {% block content %}
-<div class="container-glass">
-  <div class="glass reset-confirm-container mx-auto">
-    <h3 class="text-center mb-4">🔑 Set New Password</h3>
+<div class="form-container">
+  <div class="glass reset-container mx-auto">
+    <h3 class="text-center mb-4">🔒 Set New Password</h3>
 
-    <form method="POST" id="setPasswordForm" novalidate>
+    <form id="setPasswordForm" method="POST" novalidate>
       {% csrf_token %}
 
       {% for field in form %}
-      <div class="mb-3">
+      <div class="form-group mb-3">
         <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
         {{ field }}
         {% if field.errors %}
@@ -20,72 +21,67 @@
       </div>
       {% endfor %}
 
-      <button type="submit" id="setPasswordBtn" class="btn btn-accent w-100 mb-3">
-        <span id="btnText">Set Password</span>
-        <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
-      </button>
+      <button type="submit" id="submitButton" class="update-btn w-100 mb-3">
+  <span id="buttonText">Update Password</span>
+  <span id="buttonSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+</button>
     </form>
 
     <p class="text-center mt-3 mb-0">
-      Remembered your password? <a href="{% url 'login' %}">Sign In</a>
+      Remembered your password? <a href="{% url 'login' %}" class="text-decoration-none fw-semibold text-accent">Sign In</a>
     </p>
   </div>
 </div>
 
 <script>
 const form = document.getElementById('setPasswordForm');
-const btn = document.getElementById('setPasswordBtn');
-const btnText = document.getElementById('btnText');
-const btnSpinner = document.getElementById('btnSpinner');
+const submitButton = document.getElementById('submitButton');
+const buttonText = document.getElementById('buttonText');
+const buttonSpinner = document.getElementById('buttonSpinner');
 
-form.addEventListener('submit', function(e){
-    btnText.textContent = "Setting...";
-    btnSpinner.classList.remove('d-none');
-    btn.disabled = true;
+form.addEventListener('submit', function() {
+  buttonText.textContent = "Updating...";
+  buttonSpinner.classList.remove('d-none');
+  submitButton.disabled = true;
 });
 </script>
-{% endblock content %} {% endcomment %}
 
-{% block title %}Set New Password{% endblock title %}
+<style>
+.update-btn {
+  background: linear-gradient(135deg, #007bff, #0056d2) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 0.75rem 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  font-size: 1rem !important;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
 
-{% block content %}
-<div class="glass mx-auto mt-5 p-4" style="max-width: 450px;">
-    <h2 class="mb-4 text-center">Set New Password</h2>
+.update-btn:hover {
+  background: linear-gradient(135deg, #0056d2, #003c9e) !important;
+  box-shadow: 0 6px 18px rgba(0, 123, 255, 0.5);
+  transform: translateY(-2px);
+}
 
-    <form method="POST" >
-        {% csrf_token %}
+.update-btn:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
 
-        {% comment %} <div class="mb-3">
-            <label for="old_password" class="form-label">Current Password</label>
-            <input type="password" name="old_password" id="old_password" class="form-control" placeholder="Enter old password" required>
-            {% if old_password_error %}
-            <div class="text-danger small mt-1">{{ old_password_error }}</div>
-            {% endif %}
-        </div> {% endcomment %}
-
-        <div class="mb-3">
-            <label for="new_password1" class="form-label">New Password</label>
-            <input type="password" name="new_password1" id="new_password1" class="form-control" placeholder="Enter new password" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="new_password2" class="form-label">Confirm New Password</label>
-            <input type="password" name="new_password2" id="new_password2" class="form-control" placeholder="Confirm new password" required>
-            {% if password_mismatch %}
-            <div class="text-danger small mt-1">{{ password_mismatch }}</div>
-            {% endif %}
-        </div>
-
-        <button type="submit" class="btn btn-accent w-100">Set Password</button>
-
-        {% if success_message %}
-        <div class="text-success mt-3 text-center">{{ success_message }}</div>
-        {% endif %}
-    </form>
+.update-btn:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
+}
+</style>
 
 
-    <p class="text-center mt-3 mb-0">
-      Remembered your password? <a href="{% url 'login' %}">Sign In</a>
-    </p>
-</div>
 {% endblock content %}
+

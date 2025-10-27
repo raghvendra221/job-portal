@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from account.forms import SeekerSignUpForm, RecruiterSignUpForm, LoginForm, PasswordResetForm
+from account.forms import SeekerSignUpForm, RecruiterSignUpForm, LoginForm, PasswordResetForm, SeekerProfileForm, RecruiterProfileForm
+from account.models import User, SeekerProfile, RecruiterProfile
+from django.contrib.auth.forms import SetPasswordForm
 from application.forms import ApplicationForm
-from account.models import User
 from application.models import Notification 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -76,7 +77,7 @@ def recruiter_signup_view(request):
                 template_name="account/activation_email.html",
                 context={
                     "user": user,
-                    "activation_link": activation_url,
+                    "activation_url": activation_url,
                 },
                 to_email=user.email,
             )
@@ -128,7 +129,8 @@ def resend_activation_email(request):
 
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            activation_link = reverse('activate', kwargs={'uidb64': uidb64, 'token': token})
+            activation_link = reverse(
+                'activate', kwargs={'uidb64': uidb64, 'token': token})
             activation_url = f'{settings.SITE_DOMAIN}{activation_link}'
 
             send_custom_email(
@@ -163,8 +165,8 @@ def password_reset(req):
             absolute_reset_url=f"{req.build_absolute_uri(reset_url)}"
             send_custom_email(
                 subject="Password Reset Request",
-                template_name="account/pass_reset.html",
-                context={"user": user, "activation_url": absolute_reset_url},
+                template_name="account/reset_pass_email.html",
+                context={"user": user, "reset_url": absolute_reset_url},
                 to_email=user.email,
             )
             messages.success(req,'We have sent you a password rest link.Please check your email.')
@@ -173,6 +175,30 @@ def password_reset(req):
     else:
         form=PasswordResetForm()
     return render(req,'account/pass_reset.html',{'form':form})
+
+def password_reset_confirm(req,uidb64,token):
+    try:
+        uid =force_str(urlsafe_base64_decode(uidb64))
+        user =User.objects.get(pk=uid)
+        if not default_token_generator.check_token(user,token):
+            messages.error(req,('This link has expired or is invalid'))
+            return redirect('password-reset')
+        if req.method == "POST":
+            form = SetPasswordForm(user,req.POST)
+            if form.is_valid():
+                form.save()
+            # Here you would normally set the user's new password
+                messages.success(req,'Your password has been successfully reser')
+                return redirect('login')  # redirect to a success page
+            
+        else:
+            form = SetPasswordForm(user)
+        return render(req,'account/pass_reset_confirmation.html',{'form':form,'uidb64':uidb64,'token':token})
+    
+
+    except(TypeError,ValueError,OverflowError,User.DoesNotExist):
+        messages.error(req,'An error ocuured.Please try again later.')
+        return redirect('password-reset')
 
 
 
@@ -291,4 +317,39 @@ def apply_job(request, job_id):
 def mark_all_read(request):
     Notification.objects.filter(recruiter=request.user, is_read=False).update(is_read=True)
     return redirect('recruiter-dashboard')
+
+
+
+# Profile View and Edit
+
+@login_required
+def profile_view(request):
+    user = request.user
+
+    if user.is_seeker:
+        profile,created = SeekerProfile.objects.get_or_create(user=user)
+        form_class = SeekerProfileForm
+    elif user.is_recruiter:
+        profile,created= RecruiterProfile.objects.get_or_create(user=user)
+        form_class = RecruiterProfileForm
+    else:
+        messages.error(request, "Profile is not available for this account.")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = form_class(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile saved successfully.")
+            return redirect('profile')
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = form_class(instance=profile)
+
+   
+    return render(request, 'account/profile.html', {
+        'form': form, 'user': user,
+    })
+
 

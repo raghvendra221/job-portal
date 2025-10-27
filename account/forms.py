@@ -1,7 +1,7 @@
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm #if we usercreationform then we dont need to check the password1 and password2 is same or not
-from .models import User
+from account.models import User, SeekerProfile, RecruiterProfile   
 
 class SeekerSignUpForm(UserCreationForm):
     class Meta:
@@ -129,3 +129,31 @@ class PasswordResetForm(forms.Form):
             raise forms.ValidationError('' \
             'No account is associated with this email')
         return email
+
+
+
+
+class SeekerProfileForm(forms.ModelForm):
+    class Meta:
+        model = SeekerProfile
+        fields = ['phone', 'location', 'profile_picture', 'resume', 'skills']
+        widgets = {
+            'skills': forms.Textarea(attrs={'rows': 3, 'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'resume': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+class RecruiterProfileForm(forms.ModelForm):
+    class Meta:
+        model = RecruiterProfile
+        fields = ['phone', 'location', 'profile_picture', 'company_name', 'company_website', 'designation']
+        widgets = {
+            'company_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'company_website': forms.URLInput(attrs={'class': 'form-control'}),
+            'designation': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }

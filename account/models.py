@@ -1,6 +1,7 @@
 # accounts/models.py
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.conf import settings    
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -45,3 +46,38 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return self.is_superuser
+
+
+
+
+class BaseProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.user.name
+
+
+class SeekerProfile(BaseProfile):
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    skills = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.name} (Seeker)"
+
+
+class RecruiterProfile(BaseProfile):
+    company_name = models.CharField(max_length=100, blank=True, null=True)
+    company_website = models.URLField(blank=True, null=True)
+    designation = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.name} (Recruiter)"
+
+
+

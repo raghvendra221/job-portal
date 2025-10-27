@@ -1,3 +1,4 @@
+import threading
 from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -18,4 +19,5 @@ def send_custom_email(subject, template_name, context, to_email):
          to= [to_email],
          )
     email.attach_alternative(html_content, 'text/html')
-    email.send()
+     # ✅ Run email sending in a separate thread
+    threading.Thread(target=email.send).start()

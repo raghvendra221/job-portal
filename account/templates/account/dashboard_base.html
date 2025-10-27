@@ -21,10 +21,18 @@
     <!-- ===== Navbar ===== -->
     <nav class="custom-navbar navbar navbar-expand-lg shadow-sm">
       <div class="container-fluid">
+        {% if user.is_recruiter %}
         <a class="navbar-brand" href="{% url 'recruiter-dashboard' %}"><i class="bi bi-briefcase-fill"></i> JobPortal</a>
+        {% else %}
+        <a class="navbar-brand" href="{% url 'seeker-dashboard' %}"><i class="bi bi-briefcase-fill"></i> JobPortal</a>
+        {% endif %}
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
           <ul class="navbar-nav align-items-center">
+             <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}"><i class="bi bi-person-circle"></i> My Profile</a>
+          </li>
             {% if user.is_authenticated %}
               {% if user.is_recruiter %}
                 <li class="nav-item">
@@ -110,6 +118,48 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <ul class="sidebar-menu">
+          <!-- Sidebar Profile Card -->
+<div class="sidebar-profile">
+  <div class="sidebar-profile-avatar">
+    <img 
+      src="{% if user.is_seeker and user.seekerprofile.profile_picture %}{{ user.seekerprofile.profile_picture.url }}
+           {% elif user.is_recruiter and user.recruiterprofile.profile_picture %}{{ user.recruiterprofile.profile_picture.url }}
+           {% else %}/static/images/default-avatar.png{% endif %}" 
+      alt="Profile Picture">
+  </div>
+
+  <div class="sidebar-profile-info">
+    <h4>{{ user.get_full_name|default:user.name }}</h4>
+    <p class="role">
+      {% if user.is_seeker %}Job Seeker{% elif user.is_recruiter %}Recruiter{% endif %}
+    </p>
+
+    {% if user.city %}
+      <p class="location"><i class="bi bi-geo-alt"></i> {{ user.city }}</p>
+    {% endif %}
+
+    <hr class="sidebar-divider">
+
+    {% if user.is_seeker %}
+      {% if user.seekerprofile.skills %}
+        <p class="extra"><i class="bi bi-tools"></i> <strong>Skills:</strong> {{ user.seekerprofile.skills|truncatechars:35 }}</p>
+      {% else %}
+        <p class="extra muted">Add your skills</p>
+      {% endif %}
+    {% elif user.is_recruiter %}
+      {% if user.recruiterprofile.company_name %}
+        <p class="extra"><i class="bi bi-building"></i> <strong>Company:</strong> {{ user.recruiterprofile.company_name }}</p>
+      {% else %}
+        <p class="extra muted">Add company details</p>
+      {% endif %}
+    {% endif %}
+
+    <a href="{% url 'profile' %}" class="sidebar-profile-btn">View Profile</a>
+  </div>
+</div>
+
+         
+
           {% if user.is_recruiter %}
             <li class="nav-item">
               <a class="nav-link {% if request.resolver_match.url_name == 'recruiter-dashboard' %}active{% endif %}" href="{% url 'recruiter-dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>

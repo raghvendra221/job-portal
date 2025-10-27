@@ -1,0 +1,249 @@
+{% extends 'account/dashboard_base.html' %}
+{% block dashboard_content %}
+<style>
+/* ====== Professional Profile Page (Dashboard Integrated) ====== */
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2.5rem;
+  padding: 3rem 2rem;
+  min-height: calc(100vh - 80px);
+  margin-left: 220px; /* adjusted for sidebar width */
+  background: #f4f6fc;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+/* ====== Left Profile Card ====== */
+.profile-card {
+  width: 360px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+.profile-banner {
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+  height: 120px;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  object-fit: cover;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.profile-details {
+  margin-top: 80px;
+  padding: 1.5rem 1.2rem;
+}
+
+.profile-details h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.3rem;
+}
+
+.profile-details p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+.profile-meta {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 1rem;
+}
+
+.edit-btn {
+  background: linear-gradient(90deg, #0d6efd, #6610f2);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.edit-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* ====== Right Edit Card ====== */
+.edit-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  padding: 2rem;
+  width: 460px;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: all 0.4s ease;
+  pointer-events: none;
+}
+
+.edit-card.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.edit-card h3 {
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: #0d6efd;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+/* ====== Form Styling ====== */
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: #444;
+  font-size: 0.9rem;
+}
+
+form input,
+form textarea,
+form select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 0.3rem;
+  background: #f9f9f9;
+  font-size: 0.9rem;
+}
+
+form input:focus,
+form textarea:focus,
+form select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(13,110,253,0.1);
+}
+
+.save-btn {
+  background: linear-gradient(90deg, #198754, #20c997);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.save-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* ====== Animation: Move Profile Left on Edit ====== */
+.profile-card.shift-left {
+  transform: translateX(-70px);
+}
+
+@media (max-width: 992px) {
+  .profile-container {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0;
+  }
+  .profile-card, .edit-card {
+    width: 100%;
+    max-width: 480px;
+  }
+}
+</style>
+
+<div class="profile-container">
+  
+  <!-- Left Profile Card -->
+  <div class="profile-card" id="profile-card">
+    <div class="profile-banner"></div>
+    <img 
+      src="{% if user.is_seeker and user.seekerprofile.profile_picture %}
+              {{ user.seekerprofile.profile_picture.url }}
+            {% elif user.is_recruiter and user.recruiterprofile.profile_picture %}
+              {{ user.recruiterprofile.profile_picture.url }}
+            {% else %}
+              /static/images/default-avatar.png
+            {% endif %}" 
+      alt="Profile Picture" 
+      class="profile-avatar">
+
+    <div class="profile-details">
+      <h2>{{ user.name|default:user.name }}</h2>
+      <p>{{ user.email }}</p>
+      {% if user.is_seeker %}
+        <p><strong>Role:</strong> Job Seeker</p>
+      {% elif user.is_recruiter %}
+        <p><strong>Role:</strong> Recruiter</p>
+      {% endif %}
+      <div class="profile-meta">
+        <span>Joined {{ user.date_joined|date:"M Y" }}</span>
+      </div>
+      <button id="edit-btn" class="edit-btn">
+        <i class="bi bi-pencil-square"></i> Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Edit Form -->
+  <div class="edit-card" id="edit-card">
+    <h3>Edit Profile</h3>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% for field in form %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div style="color:red; font-size:0.8rem;">{{ field.errors }}</div>
+        {% endif %}
+      {% endfor %}
+      <button type="submit" class="save-btn">Save Changes</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+const editBtn = document.getElementById('edit-btn');
+const editCard = document.getElementById('edit-card');
+const profileCard = document.getElementById('profile-card');
+
+editBtn.addEventListener('click', () => {
+  editCard.classList.toggle('active');
+  profileCard.classList.toggle('shift-left');
+});
+</script>
+{% endblock %}

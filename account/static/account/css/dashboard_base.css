@@ -62,7 +62,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: 220px;
+  width: 270px;
   background: #fff;
   padding: 1.5rem 1rem;
   box-shadow: 2px 0 8px rgba(0,0,0,0.05);
@@ -215,4 +215,126 @@ bell ison css for notification badge */
 .badge {
   font-size: 0.65rem;
   padding: 0.3em 0.4em;
+}
+
+
+
+
+/* ===== Sidebar Profile Card ===== */
+.sidebar-profile {
+  background: linear-gradient(145deg, #0d6efd, #00c6ff);
+  border-radius: 14px;
+  padding: 1rem 0.8rem;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  width: 100%;
+    max-width: 250px; /* keeps proportions */
+  margin: 0 auto 1.5rem;
+}
+
+.sidebar-profile:hover {
+  transform: translateY(-3px);
+}
+
+/* Profile Image Wrapper */
+.sidebar-profile-avatar {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 0.6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+/* Image Fix — Always Circle */
+.sidebar-profile-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block;
+}
+
+/* Info Section */
+.sidebar-profile-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.sidebar-profile-info .role {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-profile-btn {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  background: #fff;
+  color: #007bff;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.sidebar-profile-btn:hover {
+  background: #eaf3ff;
+  color: #0056b3;
+}
+
+
+/* ===== Sidebar Profile — Enhanced Details ===== */
+.sidebar-profile-info {
+  font-size: 0.9rem;
+}
+
+.sidebar-profile-info .location,
+.sidebar-profile-info .email,
+.sidebar-profile-info .extra {
+  margin: 0.3rem 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.sidebar-profile-info i {
+  margin-right: 6px;
+  font-size: 0.9rem;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  margin: 0.8rem 0;
+}
+
+.sidebar-profile-info .extra strong {
+  font-weight: 600;
+  color: #fff;
+}
+
+.sidebar-profile-info .muted {
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Subtle hover animation */
+.sidebar-profile:hover {
+  background: linear-gradient(145deg, #0069d9, #00bfff);
+}
+
+.sidebar-content {
+  padding: 1.2rem;
 }
