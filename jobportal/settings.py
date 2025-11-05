@@ -147,6 +147,7 @@ AUTH_USER_MODEL = 'account.User'
 SITE_DOMAIN = 'http://127.0.0.1:8000/'
 SITE_NAME = 'Job Portal'
 
+
 # Mailtrap Email Configuration
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "live.smtp.mailtrap.io"
