@@ -120,7 +120,7 @@ CELERY_RESULT_BACKEND=${REDIS_URL}
 
 <h2>🚀 Key Highlights</h2>
 <ul>
-  <li>✅ AI-powered resume insights & job recommendations</li>
+  <li>✅ AI-powered resume insights </li>
   <li>✅ Real-time AJAX dashboards</li>
   <li>✅ Asynchronous processing with Celery</li>
   <li>✅ Lightweight and easily deployable (uses SQLite by default)</li>
