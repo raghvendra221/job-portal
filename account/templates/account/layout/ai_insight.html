@@ -1,0 +1,223 @@
+{% extends 'account/layout/dashboard_base.html' %}
+
+{% block title %}AI Career Insights{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1">💡 AI Career Insights</h3>
+      <p class="text-muted mb-0">Personalized analysis of your resume and job fit powered by AI</p>
+    </div>
+    <a href="{% url 'seeker-dashboard' %}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Profile Summary Section -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <h5 class="fw-bold text-primary mb-3">
+        <i class="bi bi-person-badge me-2"></i>Profile Summary
+      </h5>
+
+      <p class="text-muted mb-2">
+        <strong>Candidate:</strong> {{ user_name }}
+      </p>
+
+      {% if resume_feedback %}
+      <div class="ai-feedback">
+        <h6 class="fw-bold text-secondary mb-3">
+          <i class="bi bi-stars me-2 text-primary"></i>AI Generated Summary
+        </h6>
+        <div class="formatted-feedback">
+          {{ resume_feedback|safe }}
+        </div>
+      </div>
+      {% else %}
+      <p class="text-muted mb-0">
+        No AI insights available yet. Please upload your resume and apply to some jobs.
+      </p>
+      {% endif %}
+    </div>
+  </div>
+
+  
+  <!-- Resume Score -->
+<div class="card shadow-sm border-0 mb-4">
+  <div class="card-body">
+    <h5 class="fw-bold text-success mb-3">
+      <i class="bi bi-graph-up-arrow me-2"></i>Resume Score
+    </h5>
+    
+    <!-- ✅ Custom progress wrapper (no conflict with Bootstrap) -->
+    <div class="resume-progress-wrapper" data-score="{{ resume_score|floatformat:0 }}">
+      <div class="resume-progress-fill" style="width: {{ resume_score|floatformat:0 }}%;">
+        {{ resume_score|floatformat:0 }}%
+      </div>
+    </div>
+
+    {% if resume_score < 60 %}
+      <p class="mt-2 text-danger small">
+        <i class="bi bi-exclamation-circle"></i> Your resume can be improved. Add more skills or experiences.
+      </p>
+    {% elif resume_score < 85 %}
+      <p class="mt-2 text-warning small">
+        <i class="bi bi-lightbulb"></i> Good job! A few optimizations can make it stronger.
+      </p>
+    {% else %}
+      <p class="mt-2 text-success small">
+        <i class="bi bi-check-circle"></i> Excellent! Your resume stands out to recruiters.
+      </p>
+    {% endif %}
+  </div>
+</div>
+
+
+
+  <!-- Matched Jobs -->
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h5 class="fw-bold text-info mb-3">
+        <i class="bi bi-briefcase me-2"></i>Matched Jobs for You
+      </h5>
+
+      {% if matched_jobs %}
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Posted</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for job in matched_jobs %}
+              <tr>
+                <td class="fw-semibold">{{ job.title }}</td>
+                <td>{{ job.company_name }}</td>
+                <td>{{ job.location }}</td>
+                <td>{{ job.created_at|date:"M d, Y" }}</td>
+                <td>
+                  <a href="{% url 'job_detail' job.id %}" class="btn btn-sm btn-outline-primary">
+                    View
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted mb-0">
+          No matching jobs found yet. Try updating your resume or checking back later.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- 🔄 AI Insight Loading Toast -->
+<div id="insight-toast" class="toast align-items-center text-bg-primary border-0 position-fixed bottom-0 end-0 m-4" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 2000; display: none;">
+  <div class="d-flex">
+    <div class="toast-body d-flex align-items-center gap-2">
+      <div class="spinner-border spinner-border-sm text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span>Re-analyzing your resume with AI...</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- 🧠 Auto Markdown Formatter -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const feedbackDiv = document.querySelector(".formatted-feedback");
+  if (feedbackDiv) {
+    const rawText = feedbackDiv.innerText.trim();
+
+    // Convert markdown to clean HTML
+    const formattedHTML = marked.parse(rawText, { breaks: true });
+
+    // Replace content with formatted HTML
+    feedbackDiv.innerHTML = formattedHTML;
+
+    // Optional styling for tables and headers
+    feedbackDiv.querySelectorAll("table").forEach(tbl => {
+      tbl.classList.add("table", "table-bordered", "table-sm", "mt-2");
+      tbl.style.background = "#fff";
+    });
+
+    feedbackDiv.querySelectorAll("h1,h2,h3,h4").forEach(h => {
+      h.classList.add("fw-bold", "text-primary", "mt-3");
+    });
+
+    feedbackDiv.querySelectorAll("strong").forEach(s => {
+      s.style.color = "#0d6efd";
+    });
+
+    feedbackDiv.querySelectorAll("ul,ol").forEach(list => {
+      list.style.marginBottom = "0.5rem";
+    });
+  }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const bar = document.querySelector(".resume-progress-wrapper-fill");
+  const score = parseFloat(bar.parentElement.getAttribute("data-score")) || 0;
+  setTimeout(() => {
+    bar.style.width = score + "%";
+  }, 300); // small delay for smooth animation
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const toast = document.getElementById("insight-toast");
+  
+  // 🌟 Function to show toast
+  function showInsightToast() {
+    toast.style.display = "block";
+    toast.classList.add("show");
+  }
+
+  // 🌙 Function to hide toast
+  function hideInsightToast() {
+    toast.classList.remove("show");
+    setTimeout(() => { toast.style.display = "none"; }, 300);
+  }
+
+  // 💡 Case 1: Trigger toast on page load if resume was just updated
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("reanalysis") && urlParams.get("reanalysis") === "1") {
+    showInsightToast();
+    setTimeout(hideInsightToast, 4000);
+  }
+
+  // 💡 Case 2: Auto toast on slow AI data load (e.g. waiting for cache)
+  const aiFeedback = document.querySelector(".formatted-feedback");
+  if (!aiFeedback || aiFeedback.innerText.trim().length === 0) {
+    showInsightToast();
+    setTimeout(hideInsightToast, 5000);
+  }
+});
+</script>
+
+{% endblock %}
+

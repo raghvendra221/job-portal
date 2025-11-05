@@ -1,0 +1,96 @@
+{% extends 'account/layout/dashboard_base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+
+  /* ====== Profile Page Styling ====== */
+.profile-wrapper {
+  width: 100%;
+  margin-left: 0;
+  overflow-x: hidden;
+}
+
+.profile-body form input,
+.profile-body form select,
+.profile-body form textarea {
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-body form input:focus,
+.profile-body form select:focus,
+.profile-body form textarea:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+.profile-body:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+</style>
+
+<div class="profile-wrapper w-100 p-4" style="min-height:100vh; background:#f8f9fa;">
+  <div class="profile-header d-flex justify-content-between align-items-center mb-4 flex-wrap">
+    <div>
+      <h3 class="fw-bold mb-0 text-primary">My Profile</h3>
+      <p class="text-muted">Manage and update your account information</p>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <!-- Profile Picture -->
+      <div class="position-relative">
+  {% if form.instance.profile_picture %}
+    <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture"
+         class="rounded-circle shadow-sm border border-3 {% if user.is_seeker %}border-success{% elif user.is_recruiter %}border-info{% else %}border-primary{% endif %}"
+         width="100" height="100" style="object-fit:cover;">
+  {% else %}
+    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm border border-2 {% if user.is_seeker %}border-success{% elif user.is_recruiter %}border-info{% else %}border-primary{% endif %}"
+         style="width:100px; height:100px;">
+      <i class="bi bi-person-circle text-secondary" style="font-size:2.5rem;"></i>
+    </div>
+  {% endif %}
+</div
+
+      <!-- Upload / Remove -->
+      <form method="post" enctype="multipart/form-data" class="d-flex flex-column gap-2">
+        {% csrf_token %}
+        <input type="file" name="profile_picture" class="form-control form-control-sm">
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-sm btn-primary">Upload</button>
+          {% if form.instance.profile_picture %}
+          <button type="submit" name="remove_picture" class="btn btn-sm btn-outline-danger">Remove</button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Profile Form -->
+  <div class="profile-body bg-white rounded-4 shadow-sm p-4">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row g-4">
+        {% for field in form %}
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+          <div class="text-danger small">{{ field.errors|join:", " }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="text-end mt-4">
+        <button type="submit" class="btn btn-success px-4">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

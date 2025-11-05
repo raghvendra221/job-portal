@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to JobPortal</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; color: #333; }
+    .container {
+      background: #f4f6ff;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    {% if user.is_seeker%}
+    <h2>Welcome, {{ user.name }}! 👋</h2>
+    <p>Thank you for joining <strong>JobPortal</strong>.</p>
+    <p>Start exploring jobs or managing your profile today!</p>
+
+    <a href="{{ login_url }}" class="btn">Login Now</a>
+    {% else %}
+    <h2>Welcome, {{ user.name }}! 👋</h2>
+    <p>Thank you for registering as a <strong>Recruiter</strong> on <strong>JobPortal</strong>.</p>
+    <p>Now you can post jobs, manage applications, and find top talent effortlessly.</p>
+
+    <a href="{{ login_url }}" class="btn">Login Now</a>
+
+    <p style="margin-top: 30px; font-size: 13px; color: #666;">
+      If you did not register for a recruiter account, please ignore this email.
+    </p>
+  
+    {% endif %}
+
+    <p style="margin-top: 30px; font-size: 13px; color: #666;">
+      If you did not register, you can ignore this email.
+    </p>
+  </div>
+</body>
+</html>

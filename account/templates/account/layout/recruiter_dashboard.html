@@ -1,13 +1,9 @@
-{% extends 'account/dashboard_base.html' %}
+{% extends 'account/layout/dashboard_base.html' %}
 
 {% block title %}Recruiter Dashboard{% endblock %}
 
-{% comment %} {% block sidebar_links %}
-<li><a href="{% url 'recruiter-dashboard' %}" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-<li><a href="{% url 'post_job' %}"><i class="bi bi-plus-circle"></i> Post Job</a></li>
-{% endblock %} {% endcomment %}
 
-{% block dashboard_content %}
+{% block content %}
 <div class="container-fluid">
   <h3 class="mb-4">My Posted Jobs</h3>
   {% if jobs %}
@@ -38,4 +34,19 @@
     </div>
   {% endif %}
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+  {% for message in messages %}
+    <script>
+      Swal.fire({
+        icon: "{% if 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% elif 'success' in message.tags %}success{% else %}info{% endif %}",
+        title: "{{ message|escapejs }}",
+        timer: 3000,
+        showConfirmButton: false,
+        toast: true,
+        position: "top-end",
+      });
+    </script>
+  {% endfor %}
+{% endif %}
 {% endblock %}

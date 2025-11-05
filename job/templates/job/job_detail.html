@@ -1,0 +1,18 @@
+{% extends 'account/layout/dashboard_base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm p-4">
+    <h3 class="fw-bold">{{ job.title }}</h3>
+    <p><strong>Skills:</strong> {{ job.skills }}</p>
+    <p><strong>Description:</strong> {{ job.description }}</p>
+    <p><strong>Location:</strong> {{ job.location }}</p>
+    <p><strong>Salary:</strong> ₹{{ job.salary }}</p>
+    <p><strong>Experience Required:</strong> {{ job.experience_required }} years</p>
+    <div class="mt-3">
+      <a href="{% url 'apply_job' job.id %}" class="btn btn-success">Apply</a>
+      <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -12,10 +12,10 @@ class Application(models.Model):
     status = models.CharField(max_length=10, choices=status_choices, default='Pending')
     applied_at = models.DateTimeField(auto_now_add=True)
 
-    resume = models.FileField(upload_to='resumes/', null=True, blank=True)
-    cover_letter = models.FileField(upload_to='cover_letters/', null=True, blank=True)
-    portfolio = models.URLField(null=True, blank=True)
-    github_link = models.URLField(null=True, blank=True)
+    resume = models.FileField(upload_to='resumes/')
+    cover_letter = models.FileField(upload_to='cover_letters/')
+    portfolio = models.URLField()
+    github_link = models.URLField()
 
     is_seen = models.BooleanField(default=False)
 
@@ -25,7 +25,8 @@ class Application(models.Model):
 
 
 class Notification(models.Model):
-    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    sender=models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    recipient=models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

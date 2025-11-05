@@ -65,10 +65,24 @@ class BaseProfile(models.Model):
 
 class SeekerProfile(BaseProfile):
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
-    skills = models.TextField(blank=True, null=True)
+    resume_score = models.FloatField(default=0, blank=True, null=True)
+    ai_feedback = models.TextField(blank=True, null=True)  # <— ADD THIS
+    skills = models.CharField(
+        max_length=255,
+        blank=True,  # allow saving blank
+        null=True,
+        help_text="Comma-separated list of your skills")
 
     def __str__(self):
         return f"{self.user.name} (Seeker)"
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = SeekerProfile.objects.filter(pk=self.pk).first()
+            if old and old.resume != self.resume:
+                from account.tasks import generate_seeker_dashboard_data
+                print("🔁 Resume changed → re-running AI analysis task...")
+                generate_seeker_dashboard_data.delay(self.user.id)
+        super().save(*args, **kwargs)
 
 
 class RecruiterProfile(BaseProfile):

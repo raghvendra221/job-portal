@@ -4,12 +4,16 @@ from application.models import Job
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['title', 'description', 'location', 'salary', 'experience_required','require_resume','require_cover_letter','require_portfolio','require_github']
+        fields = ['title', 'skills','description', 'location', 'salary', 'experience_required','require_resume','require_cover_letter','require_portfolio','require_github']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter job title 📝'
             }),
+            'skills': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter required skills (comma-separated) 🛠️ '
+                }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 4,

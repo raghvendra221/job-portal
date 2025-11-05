@@ -1,0 +1,409 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        Dashboard
+      {% endblock %}
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'account/css/dash.css' %}?v=1.8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  </head>
+
+  <body>
+    <div class="d-flex" id="wrapper">
+      <!-- ===== Sidebar ===== -->
+      <nav id="sidebar" class="text-white p-3">
+        <div class="sidebar-header mb-4 text-center">
+          <h4 class="fw-bold mb-2">Job Portal</h4>
+
+          {% if user.is_authenticated %}
+            {% if user.is_seeker %}
+              {% if user.seekerprofile.profile_picture %}
+                <img src="{{ user.seekerprofile.profile_picture.url }}" alt="Profile" class="rounded-circle mt-2 mb-2 shadow" width="70" height="70" style="object-fit: cover;" />
+              {% else %}
+                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center shadow mt-2 mb-2 mx-auto" style="width:70px; height:70px; font-size:1.5rem; font-weight:600;">{{ user.name|default:user.username|slice:':1'|upper }}</div>
+              {% endif %}
+            {% elif user.is_recruiter %}
+              {% if user.recruiterprofile.profile_picture %}
+                <img src="{{ user.recruiterprofile.profile_picture.url }}" alt="Profile" class="rounded-circle mt-2 mb-2 shadow" width="70" height="70" style="object-fit: cover;" />
+              {% else %}
+                <div class="rounded-circle bg-success text-white d-inline-flex justify-content-center align-items-center shadow mt-2 mb-2 mx-auto" style="width:70px; height:70px; font-size:1.5rem; font-weight:600;">{{ user.name|default:user.name|slice:':1'|upper }}</div>
+              {% endif %}
+            {% else %}
+              <div class="rounded-circle bg-secondary text-white d-inline-flex justify-content-center align-items-center shadow mt-2 mb-2 mx-auto" style="width:70px; height:70px; font-size:1.5rem; font-weight:600;">G</div>
+            {% endif %}
+          {% else %}
+            <div class="rounded-circle bg-secondary text-white d-inline-flex justify-content-center align-items-center shadow mt-2 mb-2 mx-auto" style="width:70px; height:70px; font-size:1.5rem; font-weight:600;">G</div>
+          {% endif %}
+
+          <h6 class="fw-semibold mb-0">{{ user.name|default:user.name }}</h6>
+          {% if user.is_seeker %}
+            <small class="text-secondary">Job Seeker</small>
+          {% elif user.is_recruiter %}
+            <small class="text-secondary">Recruiter</small>
+          {% endif %}
+        </div>
+
+        <ul class="nav flex-column">
+          {% if user.is_seeker %}
+            <!-- Seeker Links -->
+            <li class="nav-item mb-2">
+              <a href="{% url 'seeker-dashboard' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'seeker-dashboard' %}
+                  
+                  
+                  
+                  active
+
+
+
+                {% else %}
+                  
+                  
+                  
+                  text-white
+
+
+
+                {% endif %}">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+              </a>
+            </li>
+
+            <li class="nav-item mb-2">
+              <a href="{% url 'my_applications' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'my_applications' %}
+                  
+                  
+                  
+                  active
+
+
+
+                {% else %}
+                  
+                  
+                  
+                  text-white
+
+
+
+                {% endif %}">
+                <i class="bi bi-file-earmark-text me-2"></i> My Applications
+              </a>
+            </li>
+
+            <li class="nav-item mb-2">
+              <a href="{% url 'ai_insight' %}" class="nav-link text-white"><i class="bi bi-robot me-2"></i>AI Insights</a>
+            </li>
+          {% elif user.is_recruiter %}
+            <!-- Recruiter Links -->
+            <li class="nav-item mb-2">
+              <a href="{% url 'recruiter-dashboard' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'recruiter-dashboard' %}
+                  
+                  
+                  
+                  active
+
+
+
+                {% else %}
+                  
+                  
+                  
+                  text-white
+
+
+
+                {% endif %}">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+              </a>
+            </li>
+
+            <li class="nav-item mb-2">
+              <a href="{% url 'post_job' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'post_job' %}
+                  
+
+                  active
+
+
+
+                {% else %}
+                  
+                  
+                  
+                  text-white
+
+
+
+                {% endif %}">
+                <i class="bi bi-briefcase me-2"></i> Post Job
+              </a>
+            </li>
+
+            <li class="nav-item mb-2">
+              <a href="{% url 'profile' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'profile' %}
+                  
+                  
+                  
+                  active
+
+
+
+                {% else %}
+                  
+                  
+                  
+                  text-white
+
+
+
+                {% endif %}">
+                <i class="bi bi-person-lines-fill me-2"></i> Profile
+              </a>
+            </li>
+          {% endif %}
+
+          <!-- Common Logout -->
+          <li class="nav-item mt-3">
+            <a href="{% url 'logout' %}" class="btn btn-outline-light w-100"><i class="bi bi-box-arrow-right me-1"></i> Logout</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- ===== Page Content ===== -->
+      <div id="page-content-wrapper" class="flex-grow-1 bg-light">
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+          <div class="container-fluid">
+            <h5 class="fw-bold mb-0">
+              <a href="{% url 'seeker-dashboard' %}" class="text-decoration-none text-dark">
+                {% block page_heading %}
+                  Dashboard
+                {% endblock %}
+              </a>
+            </h5>
+
+            <!-- Search bar -->
+            <form method="get" action="{% url 'seeker-dashboard' %}" class="d-none d-md-flex ms-auto">
+              <input name="q" class="form-control form-control-sm me-2" type="search" placeholder="Search by title, skills, or location..." value="{{ search_query|default:'' }}" />
+              <button class="btn btn-outline-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+            {% if user.is_seeker %}
+              <!-- 🔔 Seeker Notifications -->
+              <li class="nav-item dropdown me-4 position-relative" id="notification-container">
+                <a class="nav-link text-white position-relative" href="#" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-bell-fill fs-5"></i>
+                  <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2" aria-labelledby="notificationDropdown" id="notification-list">
+                  <li>
+                    <span class="dropdown-item-text text-muted small">Loading...</span>
+                  </li>
+                </ul>
+              </li>
+            {% else %}
+              <!-- 🔔 Recruiter Notifications -->
+              <!-- 🔔 Recruiter Notifications -->
+              <li class="nav-item dropdown me-4 position-relative">
+                <a class="nav-link text-white position-relative" href="#" id="recruiterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-bell-fill fs-5"></i>
+                  {% if unread_count > 0 %}
+                    <span id="recruiterCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ unread_count }}</span>
+                  {% endif %}
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-2">
+                  {% if notifications %}
+                    {% for note in notifications %}
+                      <li class="dropdown-item small">
+                        🔔 {{ note.message }}<br />
+                        <small class="text-muted">{{ note.created_at|date:'M d, H:i' }}</small>
+                      </li>
+                    {% endfor %}
+                    <li>
+                      <hr class="dropdown-divider" />
+                    </li>
+                    <li>
+                      <a href="#" class="dropdown-item text-center text-primary">Mark all as read</a>
+                    </li>
+                  {% else %}
+                    <li>
+                      <span class="dropdown-item-text text-muted small">No notifications</span>
+                    </li>
+                  {% endif %}
+                </ul>
+              </li>
+            {% endif %}
+
+            <!-- User Dropdown -->
+            <div class="dropdown ms-3">
+              <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if user.is_authenticated %}
+                  {% if user.is_seeker %}
+                    {% if user.seekerprofile.profile_picture %}
+                      <img src="{{ user.seekerprofile.profile_picture.url }}" alt="Profile" width="35" height="35" class="rounded-circle me-2" />
+                    {% else %}
+                      <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2" style="width:35px; height:35px; font-weight:600;">{{ user.name|first|upper }}</div>
+                    {% endif %}
+                    <strong>{{ user.name|default:user.name }}</strong>
+                    <small class="text-muted ms-2">(Seeker)</small>
+                  {% elif user.is_recruiter %}
+                    {% if user.recruiterprofile.profile_picture %}
+                      <img src="{{ user.recruiterprofile.profile_picture.url }}" alt="Profile" width="35" height="35" class="rounded-circle me-2" />
+                    {% else %}
+                      <div class="rounded-circle bg-success text-white d-flex justify-content-center align-items-center me-2" style="width:35px; height:35px; font-weight:600;">{{ user.name|first|upper }}</div>
+                    {% endif %}
+                    <strong>{{ user.name|default:user.name }}</strong>
+                    <small class="text-muted ms-2">(Recruiter)</small>
+                  {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" style="width:35px; height:35px; font-weight:600;">G</div>
+                    <strong>{{ user.name|default:user.username }}</strong>
+                  {% endif %}
+                {% else %}
+                  <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-2" style="width:35px; height:35px; font-weight:600;">G</div>
+                  <strong>Guest</strong>
+                {% endif %}
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
+                {% if user.is_authenticated %}
+                  <li>
+                    <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a>
+                  </li>
+                {% else %}
+                  <li>
+                    <a class="dropdown-item" href="{% url 'login' %}">Login</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="{% url 'signup' %}">Register</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container-fluid py-4">
+          {% block content %}
+
+          {% endblock %}
+        </main>
+      </div> <!-- ✅ closes page-content-wrapper -->
+    </div> <!-- ✅ closes wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SweetAlert Toast -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {% if messages %}
+      {% for message in messages %}
+        <script>
+          Swal.fire({
+            icon: "{% if 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% elif 'success' in message.tags %}success{% else %}info{% endif %}",
+            title: '{{ message|escapejs }}',
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+          })
+        </script>
+      {% endfor %}
+    {% endif %}
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        function fetchNotifications() {
+          fetch("{% url 'get_notifications' %}")
+            .then((response) => response.json())
+            .then((data) => {
+              const countEl = document.getElementById('notification-count')
+              const listEl = document.getElementById('notification-list')
+      
+              if (data.count > 0) {
+                countEl.textContent = data.count
+                countEl.classList.remove('d-none')
+              } else {
+                countEl.classList.add('d-none')
+              }
+      
+              if (data.notifications.length > 0) {
+                listEl.innerHTML = ''
+                data.notifications.forEach((n) => {
+                  const li = document.createElement('li')
+                  li.innerHTML = `
+                                            <span class="dropdown-item small">
+                                              ${n.message}<br>
+                                              <small class="text-muted">${n.created_at}</small>
+                                            </span>
+                                          `
+                  listEl.appendChild(li)
+                })
+              } else {
+                listEl.innerHTML = `
+                                          <li>
+                                            <span class="dropdown-item-text text-muted small">No new notifications</span>
+                                          </li>`
+              }
+            })
+            .catch((error) => console.error('Notification fetch error:', error))
+        }
+      
+        fetchNotifications()
+        setInterval(fetchNotifications, 10000)
+      })
+    </script>
+
+   <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const pairs = [
+    { dropdown: 'notificationDropdown', count: 'notification-count' }, // seeker
+    { dropdown: 'recruiterDropdown', count: 'recruiterCount' }          // recruiter
+  ];
+
+  pairs.forEach(pair => {
+    const dropdown = document.getElementById(pair.dropdown);
+    const countEl = document.getElementById(pair.count);
+
+    if (dropdown && countEl) {
+      dropdown.addEventListener('click', function () {
+        if (!countEl.classList.contains('d-none')) {
+          fetch("{% url 'mark_notifications_read' %}", {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": "{{ csrf_token }}",
+            },
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              countEl.classList.add('d-none'); // hide badge for this user
+            }
+          })
+          .catch(err => console.error('Mark as read failed:', err));
+        }
+      });
+    }
+  });
+});
+</script>
+
+  </body>
+</html>

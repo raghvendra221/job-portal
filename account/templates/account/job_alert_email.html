@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Job Alert</title>
+  <style>
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(90deg, #007bff, #6610f2);
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .content {
+      padding: 30px 25px;
+      line-height: 1.7;
+    }
+
+    .content h3 {
+      color: #007bff;
+      margin-top: 0;
+    }
+
+    .job-card {
+      background-color: #f8f9fa;
+      border-left: 5px solid #007bff;
+      padding: 15px 20px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white !important;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .footer {
+      background-color: #f1f3f5;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h2>🚀 New Job Alert for You!</h2>
+    </div>
+    <div class="content">
+      <p>Hi {{ user.name|default:"there" }},</p>
+      <p>
+        A new job matching your skills has just been posted on <strong>JobPortal</strong>!
+      </p>
+
+      <div class="job-card">
+        <h3>{{ job.title }}</h3>
+        <p><strong>Company:</strong> {{ job.recruiter.company_name }}</p>
+        <p><strong>Location:</strong> {{ job.location }}</p>
+        <p><strong>Skills Required:</strong> {{ job.skills }}</p>
+      </div>
+
+      <p>
+        Don’t miss this opportunity! Click below to view more details and apply right away 👇
+      </p>
+
+      <p style="text-align: center; margin: 25px 0;">
+        <a href="{{ job_url }}" class="btn">View Job Details</a>
+      </p>
+
+      <p style="margin-top: 25px;">
+        Wishing you the best of luck,<br>
+        <strong>The JobPortal Team</strong>
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>You received this email because you subscribed to JobPortal job alerts.</p>
+      <p>
+        <a href="{{ settings.SITE_DOMAIN }}/account/profile/">Manage Preferences</a> |
+        <a href="#">Unsubscribe</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

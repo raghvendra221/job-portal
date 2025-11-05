@@ -1,5 +1,5 @@
 from django.urls import path
-from account.views import login_view,seeker_signup_view,recruiter_signup_view,logout_view,home,activate_account,seeker_dashboard_view,apply_job,my_applications,mark_all_read,resend_activation_email,password_reset,password_reset_confirm,profile_view
+from account.views import login_view,seeker_signup_view,recruiter_signup_view,logout_view,home,activate_account,seeker_dashboard_view,apply_job,my_applications,mark_all_read,resend_activation_email,password_reset,password_reset_confirm,profile_view,ai_insight_view
 urlpatterns = [
     path('',home,name='home' ),
     path('login/',login_view,name='login' ),
@@ -15,4 +15,8 @@ urlpatterns = [
     path('password_reset/',password_reset,name='password-reset'),
     path('confirm/password_reset/<str:uidb64>/<str:token>/',password_reset_confirm,name='password-reset-confirm'),
     path('profile/',profile_view,name='profile' ),
+    path('insight/', ai_insight_view, name='ai_insight'),
+    # path('start-dashboard-task/', start_dashboard_task, name='start-dashboard-task'),
+
+
 ]
