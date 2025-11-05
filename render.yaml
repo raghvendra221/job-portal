@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: jobportal
+    env: python
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn jobportal.wsgi"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: jobportal.settings
+      - key: PYTHON_VERSION
+        value: 3.12.3
