@@ -99,7 +99,7 @@ CELERY_RESULT_BACKEND=${REDIS_URL}
 <h2>📸 Screenshots</h2>
 
 <p align="center">
-  <img src="screenshots/home" width="45%" alt="Home Page" />
+  <img src="screenshots/home.png" width="45%" alt="Home Page" />
   <img src="screenshots/seeker_dashboard.png" width="45%" alt="Seeker Dashboard" />
   <img src="screenshots/recruiter_dashboard.png" width="45%" alt="Recruiter Dashboard" />
 
