@@ -56,10 +56,10 @@ def seeker_signup_view(request):
                 to_email=user.email,
             )
 
-            messages.success(
-                request,
-                'Registration successful! Please check your email to activate your account',
-            )
+            # messages.success(
+            #     request,
+            #     'Registration successful! Please check your email to activate your account',
+            # )
             return redirect('login')
 
     else:
@@ -91,10 +91,10 @@ def recruiter_signup_view(request):
                 to_email=user.email,
             )
 
-            messages.success(
-                request,
-                'Registration successful! Please check your email to activate your account',
-            )
+            # messages.success(
+            #     request,
+            #     'Registration successful! Please check your email to activate your account',
+            # )
             return redirect('login')
     else:
         form = RecruiterSignUpForm()

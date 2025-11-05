@@ -27,7 +27,7 @@
               {% if user.seekerprofile.profile_picture %}
                 <img src="{{ user.seekerprofile.profile_picture.url }}" alt="Profile" class="rounded-circle mt-2 mb-2 shadow" width="70" height="70" style="object-fit: cover;" />
               {% else %}
-                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center shadow mt-2 mb-2 mx-auto" style="width:70px; height:70px; font-size:1.5rem; font-weight:600;">{{ user.name|default:user.username|slice:':1'|upper }}</div>
+                <div class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center shadow mt-2 mb-2 mx-auto" style="width:70px; height:70px; font-size:1.5rem; font-weight:600;">{{ user.name|default:user.name|slice:':1'|upper }}</div>
               {% endif %}
             {% elif user.is_recruiter %}
               {% if user.recruiterprofile.profile_picture %}
