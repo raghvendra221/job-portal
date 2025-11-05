@@ -21,7 +21,8 @@ from django.core.cache import cache
 from jobportal.celery import app
 from account.tasks import generate_seeker_dashboard_data
 from account.tasks import get_resume_hash
-from django.db.models import Q   
+from django.db.models import Q 
+from django.http import JsonResponse  
 
 
 
@@ -416,7 +417,7 @@ def apply_job(request, job_id):
     # Check if already applied
     else:
         form = ApplicationForm(job=job)
-    return render(request, 'application/apply_job.html', {'form': form, 'job': job})
+    return render(request, 'application/layout/apply_job.html', {'form': form, 'job': job})
 
 def mark_all_read(request):
     Notification.objects.filter(recruiter=request.user, is_read=False).update(is_read=True)
@@ -501,11 +502,7 @@ def ai_insight_view(request):
     if not ai_insight:
         ai_insight =  "<p class='text-muted small'>AI insight not available yet. Please refresh your dashboard.</p>"
     
-    # score_value = resume_data.get("score", 0)
-    # try:
-    #     score_value = int(str(score_value).replace("%", "").strip())
-    # except:
-    #     score_value = 0
+
     resume_score = float(resume_data.get("score") or 0)
     print("DEBUG (ai_insight_view): resume_score =", resume_score)
 
@@ -519,3 +516,65 @@ def ai_insight_view(request):
     print("DEBUG → resume_data:", resume_data)
     print("DEBUG → resume_score:", resume_data.get("score", 0))
     return render(request, "account/layout/ai_insight.html", context)
+
+# @role_required('recruiter')
+def recruiter_search_jobs(request):
+    query = request.GET.get("q", "").strip()
+    user = request.user
+    jobs = Job.objects.filter(recruiter=user)
+    if query:
+        jobs = jobs.filter(title__icontains=query) | jobs.filter(location__icontains=query)
+
+    data = {
+        "jobs": [
+            {
+                "id": job.id,
+                "title": job.title,
+                "location": job.location,
+                "salary": job.salary,
+                "experience_required": job.experience_required,
+                "description": job.description[:100] + "..." if job.description else "",
+            }
+            for job in jobs
+        ]
+    }
+    return JsonResponse(data)
+
+
+@role_required('seeker')
+def seeker_live_search(request):
+    # allow empty queries
+    query = request.GET.get("q", "").strip()
+    user = request.user
+
+    # jobs user hasn't applied to
+    applied_jobs = list(Application.objects.filter(seeker=user).values_list("job_id", flat=True))
+
+    jobs_qs = Job.objects.exclude(id__in=applied_jobs).order_by("-created_at")
+    if query:
+        jobs_qs = jobs_qs.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(skills__icontains=query) |
+            Q(location__icontains=query)
+        )
+
+    jobs = jobs_qs[:50]  # limit for safety
+
+    data = {
+        "jobs": [
+            {
+                "id": job.id,
+                "title": job.title,
+                "location": job.location or "",
+                "salary": job.salary or "",
+                "experience_required": job.experience_required or "",
+                "description": (job.description[:120] + "...") if job.description else "",
+            }
+            for job in jobs
+        ]
+    }
+    return JsonResponse(data)
+
+
+

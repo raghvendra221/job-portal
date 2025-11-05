@@ -1,52 +1,58 @@
 {% extends 'account/layout/dashboard_base.html' %}
 
-{% block title %}Recruiter Dashboard{% endblock %}
-
+{% block title %}
+  Recruiter Dashboard
+{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-  <h3 class="mb-4">My Posted Jobs</h3>
-  {% if jobs %}
-    <div class="job-list">
-      {% for job in jobs %}
-        <div class="job-card">
-          <h5>{{ job.title }}</h5>
-          <p><i class="bi bi-geo-alt"></i> {{ job.location }}</p>
-          <p><i class="bi bi-cash-stack"></i> ₹{{ job.salary }}</p>
-          <p><i class="bi bi-briefcase"></i> Experience: {{ job.experience_required }} yrs</p>
-          <p class="job-desc">{{ job.description|truncatewords:25 }}</p>
-          <div class="job-actions">
-            <a href="{%url 'view-applicants' job.id%}" class="btn btn-primary btn-sm">View Applicants</a>
-            <a href="{% url 'edit_job' job.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-            <a href="{% url 'delete_job' job.id %}" 
-             class="btn btn-sm btn-outline-danger"
-                onclick="return confirm('Are you sure you want to delete this job?');">
-               Delete
-              </a>
-
+  <div class="container-fluid">
+    <h3 class="mb-4">My Posted Jobs</h3>
+    {% if jobs %}
+      <div class="job-list">
+        {% for job in jobs %}
+          <div class="job-card">
+            <h5>{{ job.title }}</h5>
+            <p>
+              <i class="bi bi-geo-alt"></i> {{ job.location }}
+            </p>
+            <p>
+              <i class="bi bi-cash-stack"></i> ₹{{ job.salary }}
+            </p>
+            <p>
+              <i class="bi bi-briefcase"></i> Experience: {{ job.experience_required }} yrs
+            </p>
+            <p class="job-desc">{{ job.description|truncatewords:25 }}</p>
+            <div class="job-actions">
+              <a href="{% url 'view-applicants' job.id %}" class="btn btn-primary btn-sm">View Applicants</a>
+              <a href="{% url 'edit_job' job.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+              <a href="{% url 'delete_job' job.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this job?');">Delete</a>
+            </div>
           </div>
-        </div>
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="empty-state">
-      <p>You haven’t posted any jobs yet. <a href="{% url 'post_job' %}">Post a job now.</a></p>
-    </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>
+          You haven’t posted any jobs yet. <a href="{% url 'post_job' %}">Post a job now.</a>
+        </p>
+      </div>
+    {% endif %}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  {% if messages %}
+    {% for message in messages %}
+      <script>
+        Swal.fire({
+          icon: "{% if 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% elif 'success' in message.tags %}success{% else %}info{% endif %}",
+          title: '{{ message|escapejs }}',
+          timer: 3000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end'
+        })
+      </script>
+    {% endfor %}
   {% endif %}
-</div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{% if messages %}
-  {% for message in messages %}
-    <script>
-      Swal.fire({
-        icon: "{% if 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% elif 'success' in message.tags %}success{% else %}info{% endif %}",
-        title: "{{ message|escapejs }}",
-        timer: 3000,
-        showConfirmButton: false,
-        toast: true,
-        position: "top-end",
-      });
-    </script>
-  {% endfor %}
-{% endif %}
+
+
 {% endblock %}

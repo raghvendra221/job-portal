@@ -4,6 +4,7 @@ from django.urls import path,include
 from account.views import home
 from django.conf import settings
 from django.conf.urls.static import static
+from account.views import seeker_live_search
 # from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -12,7 +13,6 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('job/', include('job.urls')),
     path('application/', include('application.urls')),
-   
-    # path('', TemplateView.as_view(template_name='home.html'),name='home'),#home page using generic view
+    path('seeker/search-jobs/', seeker_live_search, name='seeker_live_search'),
     
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

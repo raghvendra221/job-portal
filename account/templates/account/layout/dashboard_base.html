@@ -59,7 +59,9 @@
                   
                   
                   
+                  
                   active
+
 
 
 
@@ -67,7 +69,9 @@
                   
                   
                   
+                  
                   text-white
+
 
 
 
@@ -82,7 +86,9 @@
                   
                   
                   
+                  
                   active
+
 
 
 
@@ -90,7 +96,9 @@
                   
                   
                   
+                  
                   text-white
+
 
 
 
@@ -110,7 +118,9 @@
                   
                   
                   
+                  
                   active
+
 
 
 
@@ -118,7 +128,9 @@
                   
                   
                   
+                  
                   text-white
+
 
 
 
@@ -131,8 +143,10 @@
               <a href="{% url 'post_job' %}"
                 class="nav-link {% if request.resolver_match.url_name == 'post_job' %}
                   
+                  
 
                   active
+
 
 
 
@@ -140,7 +154,9 @@
                   
                   
                   
+                  
                   text-white
+
 
 
 
@@ -155,7 +171,9 @@
                   
                   
                   
+                  
                   active
+
 
 
 
@@ -163,7 +181,9 @@
                   
                   
                   
+                  
                   text-white
+
 
 
 
@@ -194,10 +214,19 @@
             </h5>
 
             <!-- Search bar -->
-            <form method="get" action="{% url 'seeker-dashboard' %}" class="d-none d-md-flex ms-auto">
-              <input name="q" class="form-control form-control-sm me-2" type="search" placeholder="Search by title, skills, or location..." value="{{ search_query|default:'' }}" />
-              <button class="btn btn-outline-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
-            </form>
+            {% if user.is_recruiter %}
+              <!-- Recruiter Live Search -->
+              <div class="d-none d-md-flex ms-auto">
+                <input id="recruiterSearch" class="form-control form-control-sm me-2" type="search" placeholder="Search jobs..." autocomplete="off" />
+                <button class="btn btn-outline-primary btn-sm" type="button"><i class="bi bi-search"></i></button>
+              </div>
+            {% else %}
+              <!-- Seeker Normal Search -->
+              <form method="get" action="{% url 'seeker-dashboard' %}" class="d-none d-md-flex ms-auto">
+                <input name="q" class="form-control form-control-sm me-2" type="search" placeholder="Search by title, skills, or location..." value="{{ search_query|default:'' }}" />
+                <button class="btn btn-outline-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
+              </form>
+            {% endif %}
 
             {% if user.is_seeker %}
               <!-- 🔔 Seeker Notifications -->
@@ -329,81 +358,193 @@
     {% endif %}
 
     <script>
+document.addEventListener('DOMContentLoaded', function () {
+  function fetchNotifications() {
+    fetch("{% url 'get_notifications' %}")
+      .then((response) => response.json())
+      .then((data) => {
+        // Try to get correct badge for both user types
+        const countEl =
+          document.getElementById('notification-count') ||
+          document.getElementById('recruiterCount');
+        const listEl = document.getElementById('notification-list');
+
+        // If recruiter, skip seeker list updates safely
+        if (!countEl) return;
+
+        // Update notification count
+        if (data.count > 0) {
+          countEl.textContent = data.count;
+          countEl.classList.remove('d-none');
+        } else {
+          countEl.classList.add('d-none');
+        }
+
+        // Update dropdown list only for seeker
+        if (listEl) {
+          if (data.notifications.length > 0) {
+            listEl.innerHTML = '';
+            data.notifications.forEach((n) => {
+              const li = document.createElement('li');
+              li.innerHTML = `
+                <span class="dropdown-item small">
+                  ${n.message}<br>
+                  <small class="text-muted">${n.created_at}</small>
+                </span>`;
+              listEl.appendChild(li);
+            });
+          } else {
+            listEl.innerHTML = `
+              <li>
+                <span class="dropdown-item-text text-muted small">No new notifications</span>
+              </li>`;
+          }
+        }
+      })
+      .catch((error) => console.error('Notification fetch error:', error));
+  }
+
+  fetchNotifications();
+  setInterval(fetchNotifications, 10000);
+});
+</script>
+
+
+    <script>
       document.addEventListener('DOMContentLoaded', function () {
-        function fetchNotifications() {
-          fetch("{% url 'get_notifications' %}")
-            .then((response) => response.json())
-            .then((data) => {
-              const countEl = document.getElementById('notification-count')
-              const listEl = document.getElementById('notification-list')
+        const pairs = [
+          { dropdown: 'notificationDropdown', count: 'notification-count' }, // seeker
+          { dropdown: 'recruiterDropdown', count: 'recruiterCount' } // recruiter
+        ]
       
-              if (data.count > 0) {
-                countEl.textContent = data.count
-                countEl.classList.remove('d-none')
-              } else {
-                countEl.classList.add('d-none')
-              }
+        pairs.forEach((pair) => {
+          const dropdown = document.getElementById(pair.dropdown)
+          const countEl = document.getElementById(pair.count)
       
-              if (data.notifications.length > 0) {
-                listEl.innerHTML = ''
-                data.notifications.forEach((n) => {
-                  const li = document.createElement('li')
-                  li.innerHTML = `
-                                            <span class="dropdown-item small">
-                                              ${n.message}<br>
-                                              <small class="text-muted">${n.created_at}</small>
-                                            </span>
-                                          `
-                  listEl.appendChild(li)
+          if (dropdown && countEl) {
+            dropdown.addEventListener('click', function () {
+              if (!countEl.classList.contains('d-none')) {
+                fetch("{% url 'mark_notifications_read' %}", {
+                  method: 'POST',
+                  headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                  }
                 })
-              } else {
-                listEl.innerHTML = `
-                                          <li>
-                                            <span class="dropdown-item-text text-muted small">No new notifications</span>
-                                          </li>`
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.success) {
+                      countEl.classList.add('d-none') // hide badge for this user
+                    }
+                  })
+                  .catch((err) => console.error('Mark as read failed:', err))
               }
             })
-            .catch((error) => console.error('Notification fetch error:', error))
-        }
-      
-        fetchNotifications()
-        setInterval(fetchNotifications, 10000)
+          }
+        })
       })
     </script>
 
-   <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const pairs = [
-    { dropdown: 'notificationDropdown', count: 'notification-count' }, // seeker
-    { dropdown: 'recruiterDropdown', count: 'recruiterCount' }          // recruiter
-  ];
 
-  pairs.forEach(pair => {
-    const dropdown = document.getElementById(pair.dropdown);
-    const countEl = document.getElementById(pair.count);
 
-    if (dropdown && countEl) {
-      dropdown.addEventListener('click', function () {
-        if (!countEl.classList.contains('d-none')) {
-          fetch("{% url 'mark_notifications_read' %}", {
-            method: "POST",
-            headers: {
-              "X-CSRFToken": "{{ csrf_token }}",
-            },
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              countEl.classList.add('d-none'); // hide badge for this user
-            }
-          })
-          .catch(err => console.error('Mark as read failed:', err));
-        }
-      });
-    }
+    <script>
+  const recruiterSearchUrl = "{% url 'recruiter_search_jobs' %}";
+</script>
+    {% verbatim %}
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const recruiterSearch = document.getElementById("recruiterSearch");
+  const jobList = document.querySelector(".job-list");
+
+  if (recruiterSearch && jobList) {
+    recruiterSearch.addEventListener("keyup", function () {
+      const query = this.value.trim();
+
+     fetch(recruiterSearchUrl + "?q=" + encodeURIComponent(query))
+        .then(response => response.json())
+        .then(data => {
+          jobList.innerHTML = "";
+
+          if (data.jobs.length > 0) {
+            data.jobs.forEach(job => {
+              const card = document.createElement("div");
+              card.className = "job-card";
+              card.innerHTML = `
+                <h5>${job.title}</h5>
+                <p><i class="bi bi-geo-alt"></i> ${job.location}</p>
+                <p><i class="bi bi-cash-stack"></i> ₹${job.salary}</p>
+                <p><i class="bi bi-briefcase"></i> Experience: ${job.experience_required} yrs</p>
+                <p class="job-desc">${job.description}</p>
+                <div class="job-actions">
+                  <a href="/job/${job.id}/applicants/" class="btn btn-primary btn-sm">View Applicants</a>
+                  <a href="/job/${job.id}/edit/" class="btn btn-sm btn-outline-primary">Edit</a>
+                  <a href="/job/${job.id}/delete/" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                </div>`;
+              jobList.appendChild(card);
+            });
+          } else {
+            jobList.innerHTML = `<p class="text-muted">No matching jobs found.</p>`;
+          }
+        })
+        .catch(err => console.error("Recruiter search error:", err));
+    });
+  }
+});
+</script>
+    {% endverbatim %}
+
+
+
+<script>
+const seekerLiveUrl = "{% url 'seeker_live_search' %}";
+document.addEventListener("DOMContentLoaded", function () {
+  const seekerSearch = document.querySelector("input[name='q']");
+  const jobList = document.querySelector(".jobs-container");  // ✅ fixed selector
+
+  if (!seekerSearch || !jobList) return;
+
+  // Prevent form submit (so page doesn't reload)
+  const form = seekerSearch.closest("form");
+  if (form) form.addEventListener("submit", (e) => e.preventDefault());
+
+  // debounce (300ms)
+  let timer = null;
+  seekerSearch.addEventListener("keyup", function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      const q = seekerSearch.value.trim();
+      const url = seekerLiveUrl + "?q=" + encodeURIComponent(q);
+
+      fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+        .then((res) => {
+          if (!res.ok) throw new Error("Network response not OK: " + res.status);
+          return res.json();
+        })
+        .then((data) => {
+          jobList.innerHTML = "";
+          if (Array.isArray(data.jobs) && data.jobs.length > 0) {
+            data.jobs.forEach(function (job) {
+              const div = document.createElement("div");
+              div.className = "col-md-4 mb-3";
+              div.innerHTML =
+                "<div class='card job-card border-0 shadow-sm p-3'>" +
+                "<h6 class='fw-bold mb-1'>" + (job.title || "") + "</h6>" +
+                "<p class='text-muted small mb-2'><i class='bi bi-geo-alt'></i> " + (job.location || "") + "</p>" +
+                "<p class='small mb-2'>" + (job.description || "") + "</p>" +
+                "<a href='/apply/" + job.id + "/' class='btn btn-outline-primary btn-sm w-100'>Apply Now</a>" +
+                "</div>";
+              jobList.appendChild(div);
+            });
+          } else {
+            jobList.innerHTML = "<p class='text-muted text-center'>No matching jobs found.</p>";
+          }
+        })
+        .catch((err) => console.error("Seeker live search error:", err));
+    }, 300);
   });
 });
 </script>
+
+
 
   </body>
 </html>

@@ -81,9 +81,6 @@ def get_unseen_notifications(request):
     return JsonResponse({"count": len(data), "notifications": data})
 
 
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import Notification
 
 @login_required
 def mark_notifications_read(request):
