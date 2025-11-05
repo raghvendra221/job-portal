@@ -1,0 +1,982 @@
+/* ===== Sidebar Styles ===== */
+
+
+#sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b132b, #1c2541);
+  flex-shrink: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+#sidebar .nav-link {
+  font-size: 0.95rem;
+  padding: 10px 15px;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+#sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(3px);
+}
+
+#sidebar .nav-link.active {
+  background-color: #1d4ed8;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(29, 78, 216, 0.4);
+}
+
+.sidebar-header h4 {
+  color: #f8f9fa;
+}
+
+.sidebar-header small {
+  color: #adb5bd;
+}
+
+#sidebar img {
+  border: 3px solid #00b4d8;
+}
+
+/* ===== Page Content ===== */
+#page-content-wrapper {
+  flex-grow: 1;
+  overflow-x: hidden;
+}
+
+.navbar {
+  height: 60px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 992px) {
+  #sidebar {
+    position: fixed;
+    left: -260px;
+    transition: 0.3s;
+  }
+  #sidebar.active {
+    left: 0;
+  }
+}
+
+
+/* ====== Dashboard Enhancements ====== */
+.card {
+  border-radius: 12px;
+  
+}
+
+.ai-summary-card {
+  background: linear-gradient(135deg, #e3f2fd, #ffffff);
+}
+
+/* Job Cards */
+.job-card {
+  transition: all 0.2s ease;
+}
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Chat Section */
+.chat-box {
+  font-size: 0.9rem;
+}
+
+
+
+/* ====== Floating AI Chat ====== */
+.chat-popup-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 1050;
+}
+
+.chat-popup {
+  position: fixed;
+  bottom: 90px;
+  right: 25px;
+  width: 320px;
+  display: none;
+  z-index: 1050;
+  border-radius: 12px;
+}
+
+.chat-popup .chat-content {
+  height: 250px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+}
+
+/* Resume Insights */
+.card ul li {
+  margin-bottom: 6px;
+}
+
+/* Smooth popup */
+.chat-popup.show {
+  display: block;
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+.card img.rounded-circle {
+  border: 3px solid #0d6efd;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+.card.h-100.text-center {
+  min-height: 250px;
+}
+
+/* ===== Dropdown Menu Styling ===== */
+.dropdown-menu {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 0;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Dropdown items */
+.dropdown-menu .dropdown-item {
+  font-size: 0.9rem;
+  padding: 10px 15px;
+  color: #333;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f0f4ff;
+  color: #0d6efd;
+  transform: translateX(3px);
+}
+
+/* Divider styling */
+.dropdown-menu .dropdown-divider {
+  margin: 6px 0;
+  border-color: #e5e5e5;
+}
+
+/* Red logout color */
+.dropdown-menu .dropdown-item.text-danger {
+  font-weight: 500;
+}
+
+/* Subtle fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.app-card:hover {
+  transform: translateY(-3px);
+  transition: all 0.2s ease-in-out;
+}
+
+#sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0b132b, #1c2541);
+  flex-shrink: 0; /* Add this line */
+}
+
+
+form select.form-select {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  border-color: #d1d5db;
+  transition: all 0.2s ease-in-out;
+}
+
+form select.form-select:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.2);
+}
+
+/* ===== Status Filter Dropdown Styling ===== */
+/* ===== Apply Fancy Dropdown Look to the Select Filter ===== */
+form select.form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 35px 10px 15px;
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: all 0.2s ease-in-out;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23333' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+/* Hover and Focus effect like dropdown menu */
+form select.form-select:hover,
+form select.form-select:focus {
+  background-color: #f0f4ff;
+  color: #0d6efd;
+  outline: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+}
+
+/* Animation similar to dropdown-menu */
+form select.form-select {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ===== Notification Dropdown Styling ===== */
+
+
+/* ===== Notification Bell Styling ===== */
+.navbar .nav-link i.bi-bell-fill {
+  color: #f8f9fa; /* white bell icon */
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-link i.bi-bell-fill:hover {
+  color: #0d6efd; /* blue hover color */
+}
+
+.navbar .dropdown-menu {
+  min-width: 250px;
+}
+
+.badge {
+  font-size: 0.65rem;
+  padding: 0.35em 0.5em;
+}
+
+/* Ensure spacing from search bar */
+.navbar-nav.ms-auto .nav-item {
+  margin-left: 1rem;
+}
+
+.notification-dropdown {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 0;
+  min-width: 260px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Dropdown items */
+.notification-dropdown .dropdown-item {
+  font-size: 0.88rem;
+  padding: 10px 15px;
+  color: #333;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Hover effect */
+.notification-dropdown .dropdown-item:hover {
+  background-color: #f0f4ff;
+  color: #0d6efd;
+  transform: translateX(3px);
+}
+
+/* Badge alignment */
+.navbar .badge {
+  font-size: 0.65rem;
+  padding: 4px 6px;
+  line-height: 1;
+}
+
+/* Animation for dropdown */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Fix Black Dot on Search Icon ===== */
+
+/* Remove unwanted focus outline or dot from search button/icon */
+.navbar .btn:focus,
+.navbar .btn:active,
+.navbar .form-control:focus,
+.navbar .form-control:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Make sure icon and button background are consistent */
+.navbar .btn-search {
+  background: transparent;
+  border: none;
+  color: #f8f9fa;
+  transition: color 0.3s ease;
+}
+
+.navbar .btn-search:hover {
+  color: #0d6efd; /* blue hover */
+}
+
+/* Ensure proper spacing between input and icon */
+.navbar .input-group .form-control {
+  border: none;
+  border-bottom: 1px solid #555;
+  background: transparent;
+  color: #fff;
+}
+
+.navbar .input-group .form-control::placeholder {
+  color: #aaa;
+}
+
+.navbar .input-group .form-control:focus {
+  border-color: #0d6efd;
+}
+
+/* Optional: Slightly tighten alignment with bell icon */
+.navbar .input-group {
+  margin-right: 1rem;
+}
+
+/* ======== FIX: Navbar Layout, Spacing, and Bell Alignment ======== */
+
+/* Ensure navbar content aligns neatly */
+.navbar .container-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Keep search bar compact and white theme consistent */
+.navbar form {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 2px 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.navbar form input[type="search"] {
+  border: none;
+  background: transparent;
+  color: #333;
+  width: 160px;
+  font-size: 0.9rem;
+}
+
+.navbar form input[type="search"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Properly style the search button */
+.navbar form button {
+  background: none;
+  border: none;
+  color: #0d6efd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar form button:hover {
+  color: #084298;
+}
+
+/* Remove the annoying black dot (focus artifact) */
+.navbar form button:focus,
+.navbar form button:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Align the notification bell properly next to the search bar */
+.navbar .nav-item.dropdown {
+  margin-left: 1rem;
+}
+
+.navbar .nav-link i.bi-bell-fill {
+  color: #0d6efd; /* blue bell for visibility */
+  font-size: 1.3rem;
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-link i.bi-bell-fill:hover {
+  color: #084298;
+}
+
+/* Fix bell dropdown spacing */
+.navbar .nav-item.dropdown .dropdown-menu {
+  margin-top: 10px;
+}
+
+/* Keep user profile dropdown aligned */
+.dropdown.ms-3 {
+  margin-left: 1.5rem !important;
+}
+.navbar form button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.3);
+  border-radius: 50%;
+}
+
+
+
+.card-body p {
+  line-height: 1.4;
+}
+.card-body .spinner-border {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+/* keep the three cards equal height and prevent stretching */
+.row.mb-4 > .col-md-4 > .card.h-100 {
+  display: flex;
+  flex-direction: column;
+}
+
+.insight-container {
+  max-height: 180px;     /* change based on desired card height */
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* thin custom scrollbar */
+.insight-container::-webkit-scrollbar { width: 6px; }
+.insight-container::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.12);
+  border-radius: 10px;
+}
+
+
+
+/* Add spacing above the Recommended Jobs section only */
+.recommended-jobs-section {
+  margin-top: 2rem !important;  /* Adjust 2rem → 1.5rem if you want slightly tighter */
+}
+
+
+/* ai insight page styles */
+
+
+/* ========== AI INSIGHT STYLE FIX ========== */
+
+.ai-insight-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #2c3e50;
+  padding: 10px 5px;
+}
+
+.ai-insight-body strong,
+.ai-insight-body b {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.ai-insight-body h4,
+.ai-insight-body h5 {
+  color: #0d6efd;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Progress bar improvement */
+.progress {
+  height: 14px;
+  border-radius: 10px;
+  background: #e9ecef;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  transition: width 0.6s ease;
+}
+
+/* Highlight heading */
+.card h5 {
+  font-weight: 700;
+  color: #0d6efd;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card h5 i {
+  color: #0d6efd;
+}
+
+/* Feedback message under score bar */
+.text-success {
+  font-weight: 500;
+  color: #198754 !important;
+}
+
+
+.ai-insight-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.ai-insight-text b, 
+.ai-insight-text strong {
+  color: #007bff;
+  font-weight: 600;
+}
+
+.ai-insight-text h5, 
+.ai-insight-text h6 {
+  color: #0056b3;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+
+
+/* 🌟 AI Insight Custom Styles */
+.formatted-feedback {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px 20px;
+  border-left: 5px solid #4facfe;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.formatted-feedback h1,
+.formatted-feedback h2,
+.formatted-feedback h3,
+.formatted-feedback h4 {
+  font-size: 1.1rem;
+  color: #0d6efd;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+.formatted-feedback strong {
+  color: #000;
+  font-weight: 600;
+}
+
+.formatted-feedback ul {
+  padding-left: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.formatted-feedback li {
+  margin-bottom: 5px;
+}
+
+.ai-feedback {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+/* ===== Custom Resume Score Progress Bar ===== */
+.resume-progress-wrapper {
+  height: 25px;
+  background-color: #e9ecef;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.resume-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  line-height: 25px;
+  font-size: 14px;
+  border-radius: 12px;
+  transition: width 1.2s ease-in-out;
+}
+
+
+#insight-toast {
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  color: white;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* 🌟 Add clean gap between AI Recommended and For You sections */
+.for-you-section {
+  margin-top: 3rem !important;   /* adds ~48px vertical gap */
+}
+
+
+.rounded-circle {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.job-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space between each job card */
+}
+
+.job-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+/* --- Layout: make only content scroll, keep sidebar + navbar fixed --- */
+
+/* ensure full viewport height so we can control scroll inside content */
+html, body {
+  height: 100%;
+}
+
+/* wrapper contains sidebar + content, stop body scrolling */
+#wrapper {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden; /* prevent page-level scroll */
+  display: flex;
+}
+
+/* Sidebar: fixed in viewport left, full height */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px; /* keep same width as used elsewhere */
+  z-index: 1040; /* sit above content but below navbar if needed */
+  overflow-y: auto;
+  padding-top: 20px; /* optional */
+}
+
+/* Page content area sits to the right of the sidebar */
+#page-content-wrapper {
+  margin-left: 260px; /* same as #sidebar width */
+  width: calc(100% - 260px);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden; /* we'll scroll inner main only */
+  background: transparent; /* keep existing styling */
+}
+
+/* Navbar stays pinned to top of page-content-wrapper (not viewport) */
+#page-content-wrapper .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1050; /* above sidebar and content */
+}
+
+/* Main content scrolls inside the content area */
+#page-content-wrapper main.container-fluid,
+#page-content-wrapper main {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto; /* fill remaining space under navbar */
+  padding: 1.5rem; /* keep your existing padding if wanted */
+}
+
+/* In small screens (mobile) revert to normal flows — sidebar becomes non-fixed */
+@media (max-width: 992px) {
+  #sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+  }
+  #page-content-wrapper {
+    margin-left: 0;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  #page-content-wrapper .navbar {
+    position: relative;
+  }
+  #page-content-wrapper main.container-fluid {
+    overflow: visible;
+  }
+}
+
+
+.ai-insight-box {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+
+
+
+/* Better alignment for nested lists */
+.ai-insight-box li {
+  margin-bottom: 0.3rem;
+}
+
+/* Bold text highlight */
+.ai-insight-box strong {
+  color: #0d6efd;
+}
+
+/* Optional table look if markdown has any */
+.ai-insight-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.6rem;
+  background: #fff;
+}
+
+.ai-insight-box table, 
+.ai-insight-box th, 
+.ai-insight-box td {
+  border: 1px solid #dee2e6;
+  padding: 6px 10px;
+}
+
+.ai-insight-box th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.ai-insight-box ol {
+  counter-reset: list-counter;
+  list-style: none; /* remove default numbers */
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.ai-insight-box ol > li {
+  counter-increment: list-counter;
+  position: relative;
+  margin: 0.8rem 0;
+  padding-left: 2rem;
+  line-height: 1.6;
+}
+
+/* Custom number style */
+.ai-insight-box ol > li::before {
+  content: counter(list-counter) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #0d6efd;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Align headings after number */
+.ai-insight-box h1,
+.ai-insight-box h2,
+.ai-insight-box h3,
+.ai-insight-box h4 {
+  display: inline-block;
+  margin: 0;
+  padding-left: 0.4rem;
+  color: #0d6efd;
+  font-weight: 600;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+/* Paragraphs under list look cleaner */
+.ai-insight-box li p {
+  margin: 0.3rem 0 0 0;
+}
+
+/* Fix numbered list alignment and spacing */
+.ai-insight-box ol {
+  list-style: none;
+  counter-reset: item;
+  padding: 0;
+  margin: 0;
+}
+
+.ai-insight-box ol > li {
+  counter-increment: item;
+  position: relative;
+  margin: 1rem 0;
+  padding-left: 2rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* Blue number with perfect vertical alignment */
+.ai-insight-box ol > li::before {
+  content: counter(item) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #0d6efd;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Make first paragraph (like "Profile Summary") bold and aligned properly */
+.ai-insight-box li p:first-of-type {
+  font-weight: 600;
+  color: #0d6efd;
+  margin-bottom: 0.2rem;
+}
+
+/* Remaining paragraphs spaced cleanly */
+.ai-insight-box li p + p {
+  margin-top: 0.3rem;
+  color: #333;
+}
+/* 🌟 FINAL AI INSIGHT DESIGN (auto numbers, aligned headings) */
+.ai-insight-body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #333;
+  counter-reset: insight-counter;
+  padding-left: 0.2rem;
+}
+
+/* Headings like Profile Summary, etc. */
+.ai-insight-body span.fw-bold {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #0d6efd !important;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Add auto numbering before each heading */
+.ai-insight-body span.fw-bold::before {
+  counter-increment: insight-counter;
+  content: counter(insight-counter) ".";
+  color: #0d6efd;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Normal paragraph text */
+.ai-insight-body br {
+  line-height: 1.2;
+}
+
+
+/* 🌟 FINAL AI INSIGHT SECTION STYLE */
+.ai-insight-body {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #333;
+  counter-reset: insight-counter;
+  padding-left: 0.2rem;
+}
+
+/* Each section container */
+.insight-section {
+  margin-bottom: 0.8rem;
+}
+
+/* Headings (Profile Summary, etc.) */
+.insight-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+/* Auto numbering for each heading */
+.insight-heading::before {
+  counter-increment: insight-counter;
+  content: counter(insight-counter) ".";
+  color: #0d6efd;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* Paragraph / content text below heading */
+.insight-section br + br {
+  display: none;
+}
+
+.insight-section {
+  padding-left: 1.5rem;
+}
+
+.insight-section span + br {
+  display: none;
+}
+
+

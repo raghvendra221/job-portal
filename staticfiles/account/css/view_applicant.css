@@ -1,0 +1,57 @@
+/* ===== View Applications Page ===== */
+
+.application-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.application-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.app-header h5 {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status.pending {
+  background: #fff8e1;
+  color: #ff9800;
+}
+
+.status.accepted {
+  background: #e8f5e9;
+  color: #43a047;
+}
+
+.status.rejected {
+  background: #ffebee;
+  color: #e53935;
+}
+
+/* Texts */
+p {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 4px 0;
+}
