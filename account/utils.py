@@ -28,8 +28,19 @@ def send_custom_email(subject, template_name, context, to_email):
          to= [to_email],
          )
     email.attach_alternative(html_content, 'text/html')
-     # ✅ Run email sending in a separate thread
-    threading.Thread(target=email.send).start()
+
+    # ✅ Run email sending in a separate thread with error logging
+    def _send():
+        try:
+            email.send()
+            print(f"✅ Email sent to {to_email}: {subject}")
+        except Exception as e:
+            print(f"❌ Email FAILED to {to_email}: {subject}")
+            print(f"   Error: {e}")
+            print(f"   EMAIL_HOST_USER = {'set' if settings.EMAIL_HOST_USER else '⚠️ EMPTY'}")
+            print(f"   EMAIL_HOST_PASSWORD = {'set' if settings.EMAIL_HOST_PASSWORD else '⚠️ EMPTY'}")
+
+    threading.Thread(target=_send).start()
 
 
 
