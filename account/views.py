@@ -183,7 +183,7 @@ def password_reset(req):
                 reset_url=reverse(
                     'password-reset-confirm',kwargs={'uidb64':uidb64,'token':token}
                 )
-                absolute_reset_url=f"{req.build_absolute_uri(reset_url)}"
+                absolute_reset_url=f"{settings.SITE_DOMAIN}{reset_url}"
                 send_custom_email(
                     subject="Password Reset Request",
                     template_name="account/reset_pass_email.html",
