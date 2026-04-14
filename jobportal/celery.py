@@ -1,16 +1,9 @@
-import os
-from celery import Celery
+# Celery is not used in this project.
+# Background tasks run via Python threading (see account/tasks.py).
+# This file is kept as a no-op so existing imports don't break.
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jobportal.settings')
+class _FakeCeleryApp:
+    """Stub so `from jobportal.celery import app` still works."""
+    pass
 
-app = Celery('jobportal')
-
-# Load config from Django settings with "CELERY_" prefix
-app.config_from_object('django.conf:settings', namespace='CELERY')
-
-# Auto-discover tasks from all apps
-app.autodiscover_tasks()
-
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+app = _FakeCeleryApp()

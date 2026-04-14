@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-import dj_database_url
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,20 +25,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
-CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-0a34c.up.railway.app',
-]
 
-# Security Settings for Production (Fallback to False for local dev)
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
-CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
-SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=0, cast=int)
-SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=False, cast=bool)
-SECURE_HSTS_PRELOAD = config('SECURE_HSTS_PRELOAD', default=False, cast=bool)
+# CSRF trusted origins — reads from env, falls back to Render domain
+_csrf_origins = config('CSRF_TRUSTED_ORIGINS', default='')
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins.split(',') if origin.strip()]
+
+# Auto-add Render's .onrender.com domain to CSRF origins
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
 
 
 # Application definition
@@ -89,20 +88,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'jobportal.wsgi.application'
 
 
-# Database
+# Database — SQLite for demo (Render ephemeral filesystem is acceptable)
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -171,11 +164,11 @@ SITE_NAME = 'Job Portal'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@jobportal.com')
 
 
 
@@ -184,49 +177,19 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 PASSWORD_RESET_TIMEOUT=3600  #seconds
 
 
-# 🧠 Redis cache setup
-REDIS_URL = config("REDIS_URL", default=None)
-
-if REDIS_URL:
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": f"{REDIS_URL}/1",
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
-        }
+# Cache — In-memory (no Redis needed)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
     }
-    # Celery Configuration
-    CELERY_BROKER_URL = f"{REDIS_URL}/0"
-    CELERY_RESULT_BACKEND = f"{REDIS_URL}/0"
-else:
-    CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-            "LOCATION": "unique-snowflake",
-        }
-    }
-    # Celery Configuration
-    CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
-    CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+}
 
-# removing redis session for now
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_CACHE_ALIAS = "default"
 
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
-CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = "Asia/Kolkata"
 
-
-
-
-
-# at bottom of settings.py (after other settings)
-import sys
-
+# Logging
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -252,7 +215,23 @@ LOGGING = {
         # Root logger to catch other errors
         "": {
             "handlers": ["console"],
-            "level": "ERROR",
+            "level": "INFO",
         },
     },
 }
+
+
+# ========================================
+# Startup Logging — verify env loading
+# ========================================
+import logging as _logging
+_startup_logger = _logging.getLogger("jobportal.startup")
+_startup_logger.info("✅ SECRET_KEY loaded: %s", "Yes" if SECRET_KEY != 'unsafe-secret-key' else "⚠️  Using default!")
+_startup_logger.info("✅ DEBUG = %s", DEBUG)
+_startup_logger.info("✅ DATABASE = SQLite @ %s", DATABASES['default']['NAME'])
+_startup_logger.info("✅ EMAIL_HOST_USER loaded: %s", "Yes" if EMAIL_HOST_USER else "⚠️  Not set")
+_startup_logger.info("✅ GEMINI_API_KEY loaded: %s", "Yes" if os.getenv("GEMINI_API_KEY") else "⚠️  Not set")
+_startup_logger.info("✅ ALLOWED_HOSTS = %s", ALLOWED_HOSTS)
+_startup_logger.info("✅ CSRF_TRUSTED_ORIGINS = %s", CSRF_TRUSTED_ORIGINS)
+if RENDER_EXTERNAL_HOSTNAME:
+    _startup_logger.info("✅ Render hostname detected: %s", RENDER_EXTERNAL_HOSTNAME)

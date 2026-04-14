@@ -1,11 +1,23 @@
 services:
   - type: web
     name: jobportal
-    env: python
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    runtime: python
+    buildCommand: "./build.sh"
     startCommand: "gunicorn jobportal.wsgi"
     envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: jobportal.settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
       - key: PYTHON_VERSION
-        value: 3.12.3
+        value: "3.12.0"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: SITE_DOMAIN
+        sync: false
