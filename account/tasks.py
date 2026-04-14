@@ -53,12 +53,14 @@ logger = logging.getLogger(__name__)
 def get_resume_hash(seeker_profile):
     """Create hash to detect resume changes"""
     resume = getattr(seeker_profile, "resume", None)
-    if not resume or not hasattr(resume, "name"):
+    if not resume or not hasattr(resume, "name") or not resume.name:
         return "no_resume"
-    # use file name + size + modified time-like attribute (safe fallback)
-    size = getattr(resume, "size", 0)
-    uploaded = getattr(resume, "uploaded_at", "") or getattr(resume, "modified_time", "")
-    hash_input = f"{resume.name}_{size}_{uploaded}"
+    # use file name + size (safely handle missing files on ephemeral storage)
+    try:
+        size = resume.size
+    except (FileNotFoundError, OSError):
+        size = 0
+    hash_input = f"{resume.name}_{size}"
     return hashlib.md5(hash_input.encode()).hexdigest()
 
 
