@@ -166,8 +166,11 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@jobportal.com')
 
-# Use real SMTP if credentials are set, otherwise log emails to console
-if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+# Because Render Free Tier blocks all outbound SMTP ports, force the Console email backend 
+# so you can copy/paste the magic links from your Render Deploy logs.
+if _render_host:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+elif EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = "smtp.gmail.com"
     EMAIL_PORT = 465
