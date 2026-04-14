@@ -25,7 +25,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=200)
     city = models.CharField(max_length=255, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_recruiter = models.BooleanField(default=False)
@@ -76,13 +76,18 @@ class SeekerProfile(BaseProfile):
     def __str__(self):
         return f"{self.user.name} (Seeker)"
     def save(self, *args, **kwargs):
+        recalculate = False
         if self.pk:
             old = SeekerProfile.objects.filter(pk=self.pk).first()
             if old and old.resume != self.resume:
-                from account.tasks import generate_seeker_dashboard_data
-                print("🔁 Resume changed → re-running AI analysis task...")
-                generate_seeker_dashboard_data.delay(self.user.id)
+                recalculate = True
+                
         super().save(*args, **kwargs)
+        
+        if recalculate:
+            from account.tasks import trigger_generate_seeker_dashboard_data
+            print("🔁 Resume changed → re-running AI analysis task...")
+            trigger_generate_seeker_dashboard_data(self.user.id)
 
 
 class RecruiterProfile(BaseProfile):

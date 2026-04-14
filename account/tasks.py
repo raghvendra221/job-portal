@@ -1,6 +1,6 @@
 
 
-from celery import shared_task
+
 import json, hashlib, logging
 from django.core.cache import cache
 from django.contrib.auth import get_user_model
@@ -62,7 +62,17 @@ def get_resume_hash(seeker_profile):
     return hashlib.md5(hash_input.encode()).hexdigest()
 
 
-@shared_task
+def trigger_generate_seeker_dashboard_data(user_id):
+    lock_key = f"task_running_{user_id}"
+    if cache.get(lock_key):
+        return
+    cache.set(lock_key, True, timeout=120)
+    
+    import threading
+    thread = threading.Thread(target=generate_seeker_dashboard_data, args=(user_id,))
+    thread.daemon = True
+    thread.start()
+
 def generate_seeker_dashboard_data(user_id):
     """
     Background Celery task: compute resume analysis, recommended jobs and AI insight.
@@ -171,24 +181,28 @@ def generate_seeker_dashboard_data(user_id):
         import traceback
         traceback.print_exc()
         Result["error"] = str(err)
-        # --- Save key metrics to DB for sidebar sync ---
+        
+    # --- Save key metrics to DB for sidebar sync ---
     try:
-        score = Result.get("resume_data", {}).get("score", 0)
-        feedback = Result.get("resume_data", {}).get("feedback", "")
+        if 'seeker_profile' in locals() and seeker_profile:
+            score = Result.get("resume_data", {}).get("score", 0)
+            feedback = Result.get("resume_data", {}).get("feedback", "")
 
-        # ✅ Update only existing fields
-        seeker_profile.resume_score = score or 0
-        seeker_profile.ai_feedback = feedback or ""
-        seeker_profile.save(update_fields=["resume_score", "ai_feedback"])
+            # ✅ Update only existing fields
+            seeker_profile.resume_score = score or 0
+            seeker_profile.ai_feedback = feedback or ""
+            seeker_profile.save(update_fields=["resume_score", "ai_feedback"])
 
-        print(f"✅ DB Sync Complete → score={score}, feedback length={len(feedback)}")
+            print(f"✅ DB Sync Complete → score={score}, feedback length={len(feedback)}")
 
     except Exception as e:
         print(f"⚠️ Could not update seeker_profile → {e}")
+    finally:
+        cache.delete(f"task_running_{user_id}")
 
 
 
-    print("🏁 Celery finished")
+    print("🏁 Thread finished")
     # ensure result is JSON serializable
     return json.loads(json.dumps(Result, default=str))
 

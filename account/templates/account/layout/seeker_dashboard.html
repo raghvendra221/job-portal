@@ -88,7 +88,10 @@
 
     <div id="ai-insight-box" class="ai-insight-box">
       {% if ai_insight %}
-        {{ ai_insight|safe }}
+        <!-- ===== UPDATED / NEW FEATURE ===== -->
+        <div class="raw-markdown-content" style="display:none;">{{ ai_insight }}</div>
+        <div class="html-formatted-content"></div>
+        <!-- ===== UPDATED / NEW FEATURE ===== -->
       {% else %}
         <p class="text-muted small">AI is analyzing your profile... please check again soon.</p>
       {% endif %}
@@ -155,5 +158,48 @@
 
 
 
+
+<!-- ===== UPDATED / NEW FEATURE ===== -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const mdDiv = document.querySelector(".raw-markdown-content");
+  const htmlDiv = document.querySelector(".html-formatted-content");
+  
+  if (mdDiv && htmlDiv) {
+    const rawText = mdDiv.textContent || mdDiv.innerText;
+    htmlDiv.innerHTML = marked.parse(rawText, { breaks: true });
+  }
+});
+</script>
+<style>
+/* Clean Markdown UI Overrides */
+.html-formatted-content {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #495057;
+}
+.html-formatted-content h1, 
+.html-formatted-content h2, 
+.html-formatted-content h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0d6efd;
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+.html-formatted-content strong {
+  font-weight: 700;
+  color: #212529;
+}
+.html-formatted-content ul {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.html-formatted-content li {
+  margin-bottom: 4px;
+}
+</style>
+<!-- ===== UPDATED / NEW FEATURE ===== -->
 
 {% endblock %}

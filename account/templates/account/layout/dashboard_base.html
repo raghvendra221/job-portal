@@ -168,29 +168,27 @@
             <li class="nav-item mb-2">
               <a href="{% url 'profile' %}"
                 class="nav-link {% if request.resolver_match.url_name == 'profile' %}
-                  
-                  
-                  
-                  
                   active
-
-
-
-
                 {% else %}
-                  
-                  
-                  
-                  
                   text-white
-
-
-
-
                 {% endif %}">
                 <i class="bi bi-person-lines-fill me-2"></i> Profile
               </a>
             </li>
+
+            <!-- ===== NEW FEATURE ===== -->
+            <li class="nav-item mb-2">
+              <a href="{% url 'recruiter-applicants' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'recruiter-applicants' %}
+                  active
+                {% else %}
+                  text-white
+                {% endif %}">
+                <i class="bi bi-people-fill me-2"></i> Applicants
+              </a>
+            </li>
+            <!-- ===== NEW FEATURE ===== -->
+
           {% endif %}
 
           <!-- Common Logout -->
@@ -256,8 +254,12 @@
                   {% if notifications %}
                     {% for note in notifications %}
                       <li class="dropdown-item small">
-                        🔔 {{ note.message }}<br />
-                        <small class="text-muted">{{ note.created_at|date:'M d, H:i' }}</small>
+                        <!-- ===== UPDATED / NEW FEATURE ===== -->
+                        <a href="{{ note.action_url|default:'#' }}" class="text-decoration-none text-dark d-block">
+                          🔔 {{ note.message }}<br />
+                          <small class="text-muted">{{ note.created_at|date:'M d, H:i' }}</small>
+                        </a>
+                        <!-- ===== UPDATED / NEW FEATURE ===== -->
                       </li>
                     {% endfor %}
                     <li>
@@ -386,11 +388,13 @@ document.addEventListener('DOMContentLoaded', function () {
             listEl.innerHTML = '';
             data.notifications.forEach((n) => {
               const li = document.createElement('li');
+              // ===== UPDATED / NEW FEATURE =====
               li.innerHTML = `
-                <span class="dropdown-item small">
-                  ${n.message}<br>
+                <a href="${n.action_url}" class="dropdown-item small text-decoration-none text-dark">
+                  🔔 ${n.message}<br>
                   <small class="text-muted">${n.created_at}</small>
-                </span>`;
+                </a>`;
+              // ===== UPDATED / NEW FEATURE =====
               listEl.appendChild(li);
             });
           } else {

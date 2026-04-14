@@ -53,12 +53,23 @@
         {% endif %}
       </div>
 
-       <a href="{% url 'update-application-status' app.id %}" class="btn btn-primary btn-sm w-100">
+       <a href="{% url 'update-application-status' app.id %}" class="btn btn-primary btn-sm w-100 mb-2">
         Update Status
       </a> 
+
+      <!-- ===== NEW FEATURE START ===== -->
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-outline-success btn-sm shortlist-toggle-btn" data-id="{{ app.id }}">
+          Toggle Shortlist
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm view-match-btn" data-id="{{ app.id }}">
+          AI Match Score
+        </button>
+      </div>
+      <!-- Inline AI Result Container -->
+      <div id="ai-match-div-{{ app.id }}" class="mt-2 text-muted small p-2 bg-light rounded" style="display:none;"></div>
+      <!-- ===== NEW FEATURE END ===== -->
       
-    
-      </a>
     </div>
   </div>
   {% endfor %}
@@ -66,5 +77,88 @@
 {% else %}
 <p class="text-center">No applications yet for this job.</p>
 {% endif %}
-{% endblock %}
 
+<!-- ===== UPDATED / NEW FEATURE ===== -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* Clean Markdown UI Overrides */
+.parsed-md-feedback {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #495057;
+}
+.parsed-md-feedback h1, 
+.parsed-md-feedback h2, 
+.parsed-md-feedback h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0d6efd;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+.parsed-md-feedback strong {
+  font-weight: 700;
+  color: #212529;
+}
+.parsed-md-feedback ul {
+  padding-left: 18px;
+  margin-bottom: 8px;
+}
+.parsed-md-feedback li {
+  margin-bottom: 3px;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Asynchronous Shortlist Toggling
+    document.querySelectorAll('.shortlist-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            let appId = this.getAttribute('data-id');
+            fetch(`/application/ajax/shortlist/${appId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.action === "added") {
+                        this.innerText = "Remove Shortlist";
+                        this.classList.replace('btn-outline-success', 'btn-success');
+                    } else if (data.action === "removed") {
+                        this.innerText = "Toggle Shortlist";
+                        this.classList.replace('btn-success', 'btn-outline-success');
+                    }
+                })
+                .catch(err => console.error("Shortlist routing error:", err));
+        });
+    });
+
+    // Asynchronous AI Match View
+    document.querySelectorAll('.view-match-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            let appId = this.getAttribute('data-id');
+            let targetDiv = document.getElementById(`ai-match-div-${appId}`);
+            
+            // Toggle visibility
+            if (targetDiv.style.display === "block") {
+                targetDiv.style.display = "none";
+                return;
+            }
+            
+            targetDiv.innerHTML = "<em>Loading candidate analysis...</em>";
+            targetDiv.style.display = "block";
+            
+            fetch(`/application/ajax/candidate-match/${appId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    const formattedFeedback = marked.parse(data.feedback, { breaks: true });
+                    targetDiv.innerHTML = `<strong class="text-dark">Match Score: ${data.score}%</strong><hr class="mt-1 mb-2"> <div class="parsed-md-feedback">${formattedFeedback}</div>`;
+                })
+                .catch(err => {
+                    targetDiv.innerHTML = "<span class='text-danger'>Network error. Endpoint not found.</span>";
+                    console.error("Match routing error:", err);
+                });
+        });
+    });
+});
+</script>
+<!-- ===== UPDATED / NEW FEATURE ===== -->
+
+{% endblock %}

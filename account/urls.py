@@ -17,6 +17,5 @@ urlpatterns = [
     path('profile/',profile_view,name='profile' ),
     path('insight/', ai_insight_view, name='ai_insight'),
     path("recruiter/search-jobs/", recruiter_search_jobs, name="recruiter_search_jobs"),
-    path("seeker/search-jobs/", seeker_live_search, name="seeker_live_search"),
 
 ]

@@ -132,6 +132,7 @@ def activate_account(req, uidb64, token):
         else:
             messages.error(
                 req, "The activation link is invalid or has expired.")
+            return redirect('login')
 
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         messages.error(req, "Invalid activation link.")
@@ -180,15 +181,15 @@ def password_reset(req):
                 uidb64=urlsafe_base64_encode(force_bytes(user.pk))
                 token= default_token_generator.make_token(user)
                 reset_url=reverse(
-                'password-reset-confirm',kwargs={'uidb64':uidb64,'token':token}
-            )
-            absolute_reset_url=f"{req.build_absolute_uri(reset_url)}"
-            send_custom_email(
-                subject="Password Reset Request",
-                template_name="account/reset_pass_email.html",
-                context={"user": user, "reset_url": absolute_reset_url},
-                to_email=user.email,
-            )
+                    'password-reset-confirm',kwargs={'uidb64':uidb64,'token':token}
+                )
+                absolute_reset_url=f"{req.build_absolute_uri(reset_url)}"
+                send_custom_email(
+                    subject="Password Reset Request",
+                    template_name="account/reset_pass_email.html",
+                    context={"user": user, "reset_url": absolute_reset_url},
+                    to_email=user.email,
+                )
             messages.success(req,'We have sent you a password rest link.Please check your email.')
 
             return redirect('login')
@@ -253,6 +254,8 @@ def login_view(request):
                 if user.is_recruiter:
                     return redirect('recruiter-dashboard')
                 else:
+                    from account.tasks import trigger_generate_seeker_dashboard_data
+                    trigger_generate_seeker_dashboard_data(user.id)
                     return redirect('seeker-dashboard')
             else:
                 messages.error(request, "Invalid email or password")
@@ -295,9 +298,11 @@ def seeker_dashboard_view(request):
     applied_jobs = list(Application.objects.filter(seeker=user).values_list("job_id", flat=True))
     query =request.GET.get('q','').strip()
 
-    #  If cache empty  run Celery and show waiting message
+    #  If cache empty run background thread and show waiting message
     if not resume_data or not recommended_jobs or not ai_insight:
-        task = generate_seeker_dashboard_data.delay(user.id)
+        from account.tasks import trigger_generate_seeker_dashboard_data
+        trigger_generate_seeker_dashboard_data(user.id)
+        
         jobs_sample=Job.objects.all()
         if query:
             jobs_sample = jobs_sample.filter(
@@ -313,7 +318,7 @@ def seeker_dashboard_view(request):
             {
                  "loading": True,
                 "message": "⏳ AI is analyzing your resume... please wait a few seconds.",
-                "task_id": task.id,
+                "task_id": None,
                 "jobs": jobs_sample,
                 "applied_jobs": applied_jobs,
                 "search_query": query,
@@ -406,11 +411,14 @@ def apply_job(request, job_id):
             application.seeker = seeker
             application.job = job
             # Create notification for recruiter
+            # ===== UPDATED / NEW FEATURE =====
             Notification.objects.create(
                 sender=seeker,
                 recipient=job.recruiter,
-                message=f"{seeker.name} applied for your job '{job.title}'."
+                message=f"{seeker.name} applied for your job '{job.title}'.",
+                action_url=reverse('view-applicants', args=[job.id])
             )
+            # ===== UPDATED / NEW FEATURE =====
             application.save()
             messages.success(request, "Application submitted successfully!")
             return redirect('seeker-dashboard')
@@ -420,7 +428,7 @@ def apply_job(request, job_id):
     return render(request, 'application/layout/apply_job.html', {'form': form, 'job': job})
 
 def mark_all_read(request):
-    Notification.objects.filter(recruiter=request.user, is_read=False).update(is_read=True)
+    Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
     return redirect('recruiter-dashboard')
 
 

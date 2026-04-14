@@ -39,11 +39,14 @@ def send_custom_email(subject, template_name, context, to_email):
 
 load_dotenv()
 
+import logging
+logger = logging.getLogger(__name__)
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in .env file!")
-
-genai.configure(api_key=GEMINI_API_KEY)
+    logger.warning("GEMINI_API_KEY not found in .env file! AI features will not work.")
+else:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 
 #  Gemini job recommender (always returns valid JSON)
@@ -384,5 +387,29 @@ def generate_ai_insight(seeker_profile, matched_jobs=None):
     except Exception as e:
         print("⚠️ generate_ai_insight error:", e)
         return ("<div class='ai-insight-body text-muted small'>AI insight temporarily unavailable. Try re-uploading your resume later.</div>")
+
+# ===== NEW FEATURE =====
+def generate_job_description_with_gemini(job_title, skills, experience):
+    """
+    Generate professional job description using AI.
+    """
+    if not job_title:
+        return "Job title required to generate description."
+        
+    try:
+        prompt = f"""
+        Generate a professional job description for the role of '{job_title}'.
+        Required skills: {skills if skills else 'Not specified'}.
+        Experience required: {experience if experience else 'Not specified'} years.
+        
+        Provide a concise, professional 3 paragraph description suitable for a job portal. Do NOT use markdown. Start directly with the description text, do not repeat the job title at the top.
+        """
+        model = genai.GenerativeModel("models/gemini-flash-latest")
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print("⚠️ generate_job_description error:", e)
+        return f"AI Generation failed: {str(e)}"
+# ===== NEW FEATURE =====
 
 

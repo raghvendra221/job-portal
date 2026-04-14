@@ -7,6 +7,9 @@ from django.conf.urls.static import static
 from account.views import seeker_live_search
 # from django.views.generic import TemplateView
 
+from django.urls import re_path
+from django.views.static import serve
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'), 
@@ -14,5 +17,12 @@ urlpatterns = [
     path('job/', include('job.urls')),
     path('application/', include('application.urls')),
     path('seeker/search-jobs/', seeker_live_search, name='seeker_live_search'),
-    
-]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+        re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    ]

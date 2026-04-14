@@ -47,10 +47,16 @@ def recruiter_dashboard_view(request):
     notifications = base_qs[:10]
     # Jobs posted by the recruiter
     jobs = Job.objects.filter(recruiter=request.user)
+    
+    # ===== NEW FEATURE START =====
+    recent_applications = Application.objects.filter(job__recruiter=request.user).order_by('-applied_at')[:15]
+    # ===== NEW FEATURE END =====
+    
     context={
         'notifications': notifications, 
         'unread_count': unread_count,
-        'jobs':jobs
+        'jobs': jobs,
+        'recent_applications': recent_applications
         }
 
     return render(request, 'account/layout/recruiter_dashboard.html', context)
