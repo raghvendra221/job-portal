@@ -157,10 +157,10 @@ AUTH_USER_MODEL = 'account.User'
 
 
 # Site info
-SITE_DOMAIN = config('SITE_DOMAIN', default='http://127.0.0.1:8000').rstrip('/')
+_render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+_default_domain = f"https://{_render_host}" if _render_host else 'http://127.0.0.1:8000'
+SITE_DOMAIN = config('SITE_DOMAIN', default=_default_domain).rstrip('/')
 SITE_NAME = 'Job Portal'
-
-
 
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
