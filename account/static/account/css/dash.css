@@ -55,17 +55,7 @@ body {
   background-color: #f8f9fa;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 992px) {
-  #sidebar {
-    position: fixed;
-    left: -260px;
-    transition: 0.3s;
-  }
-  #sidebar.active {
-    left: 0;
-  }
-}
+
 
 
 /* ====== Dashboard Enhancements ====== */
@@ -744,25 +734,42 @@ html, body {
   padding: 1.5rem; /* keep your existing padding if wanted */
 }
 
-/* In small screens (mobile) revert to normal flows — sidebar becomes non-fixed */
+/* In small screens (mobile) - Sidebar as a drawer */
 @media (max-width: 992px) {
   #sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
-    min-height: 0;
+    position: fixed;
+    top: 0;
+    left: -260px;
+    width: 260px;
+    height: 100vh;
+    z-index: 1060;
+    transition: left 0.3s ease-in-out;
+  }
+  #sidebar.active {
+    left: 0;
   }
   #page-content-wrapper {
     margin-left: 0;
     width: 100%;
-    height: auto;
-    overflow: visible;
   }
-  #page-content-wrapper .navbar {
-    position: relative;
+  
+  #sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 1055;
   }
-  #page-content-wrapper main.container-fluid {
-    overflow: visible;
+
+  /* Make navbar items better stacked if needed */
+  .navbar-nav {
+    flex-direction: row;
+  }
+  .navbar form {
+    margin-top: 10px;
+    width: 100%;
   }
 }
 

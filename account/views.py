@@ -38,6 +38,13 @@ def seeker_signup_view(request):
         form = SeekerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            import os
+            # Demo Mode: Auto-activate user so third-parties don't get stuck waiting for emails
+            if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+                user.is_active = True
+                user.save()
+                messages.success(request, 'Demo Mode: Registration successful! Your account has been auto-activated. You can now login.')
+                return redirect('login')
 
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
@@ -56,10 +63,10 @@ def seeker_signup_view(request):
                 to_email=user.email,
             )
 
-            # messages.success(
-            #     request,
-            #     'Registration successful! Please check your email to activate your account',
-            # )
+            messages.success(
+                request,
+                'Registration successful! Please check your email (or server logs) to activate your account.',
+            )
             return redirect('login')
 
     else:
@@ -74,6 +81,13 @@ def recruiter_signup_view(request):
         form = RecruiterSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            import os
+            # Demo Mode: Auto-activate user so third-parties don't get stuck waiting for emails
+            if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+                user.is_active = True
+                user.save()
+                messages.success(request, 'Demo Mode: Registration successful! Your account has been auto-activated. You can now login.')
+                return redirect('login')
 
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
@@ -91,10 +105,10 @@ def recruiter_signup_view(request):
                 to_email=user.email,
             )
 
-            # messages.success(
-            #     request,
-            #     'Registration successful! Please check your email to activate your account',
-            # )
+            messages.success(
+                request,
+                'Registration successful! Please check your email (or server logs) to activate your account.',
+            )
             return redirect('login')
     else:
         form = RecruiterSignUpForm()
