@@ -38,37 +38,44 @@ def seeker_signup_view(request):
         form = SeekerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            import os
-            # Demo Mode: Auto-activate user so third-parties don't get stuck waiting for emails
-            if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
-                user.is_active = True
-                user.save()
-                messages.success(request, 'Demo Mode: Registration successful! Your account has been auto-activated. You can now login.')
-                return redirect('login')
+            user.is_active = True
+            user.save()
 
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-            activation_link = reverse(
-                'activate', kwargs={'uidb64': uidb64, 'token': token}
-            )
-            activation_url = f'{settings.SITE_DOMAIN}{activation_link}'
+            # --- EMAIL ACTIVATION CODE (COMMENTED OUT) ---
+            # import os
+            # # Demo Mode: Auto-activate user so third-parties don't get stuck waiting for emails
+            # if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+            #     user.is_active = True
+            #     user.save()
+            #     messages.success(request, 'Demo Mode: Registration successful! Your account has been auto-activated. You can now login.')
+            #     return redirect('login')
+            # 
+            # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            # token = default_token_generator.make_token(user)
+            # activation_link = reverse(
+            #     'activate', kwargs={'uidb64': uidb64, 'token': token}
+            # )
+            # activation_url = f'{settings.SITE_DOMAIN}{activation_link}'
+            # 
+            # send_custom_email(
+            #     subject="Activate Your Account",
+            #     template_name="account/activation_email.html",
+            #     context={
+            #         "user": user,
+            #         "activation_url": activation_url,
+            #     },
+            #     to_email=user.email,
+            # )
+            # 
+            # messages.success(
+            #     request,
+            #     'Registration successful! Please check your email (or server logs) to activate your account.',
+            # )
+            # return redirect('login')
+            # ---------------------------------------------
 
-            send_custom_email(
-                subject="Activate Your Account",
-                template_name="account/activation_email.html",
-                context={
-                    "user": user,
-                    "activation_url": activation_url,
-                },
-                to_email=user.email,
-            )
-
-            messages.success(
-                request,
-                'Registration successful! Please check your email (or server logs) to activate your account.',
-            )
+            messages.success(request, 'Registration successful! Your account has been auto-activated. You can now login.')
             return redirect('login')
-
     else:
         form = SeekerSignUpForm()
     return render(request, 'account/seeker_signup.html', {'form': form})
@@ -81,34 +88,42 @@ def recruiter_signup_view(request):
         form = RecruiterSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            import os
-            # Demo Mode: Auto-activate user so third-parties don't get stuck waiting for emails
-            if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
-                user.is_active = True
-                user.save()
-                messages.success(request, 'Demo Mode: Registration successful! Your account has been auto-activated. You can now login.')
-                return redirect('login')
+            user.is_active = True
+            user.save()
+            
+            # --- EMAIL ACTIVATION CODE (COMMENTED OUT) ---
+            # import os
+            # # Demo Mode: Auto-activate user so third-parties don't get stuck waiting for emails
+            # if os.environ.get('RENDER_EXTERNAL_HOSTNAME'):
+            #     user.is_active = True
+            #     user.save()
+            #     messages.success(request, 'Demo Mode: Registration successful! Your account has been auto-activated. You can now login.')
+            #     return redirect('login')
+            #
+            # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            # token = default_token_generator.make_token(user)
+            # activation_link = reverse(
+            #     'activate', kwargs={'uidb64': uidb64, 'token': token}
+            # )
+            # activation_url = f'{settings.SITE_DOMAIN}{activation_link}'
+            # send_custom_email(
+            #     subject="Activate Your Account",
+            #     template_name="account/activation_email.html",
+            #     context={
+            #         "user": user,
+            #         "activation_url": activation_url,
+            #     },
+            #     to_email=user.email,
+            # )
+            #
+            # messages.success(
+            #     request,
+            #     'Registration successful! Please check your email (or server logs) to activate your account.',
+            # )
+            # return redirect('login')
+            # ---------------------------------------------
 
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
-            activation_link = reverse(
-                'activate', kwargs={'uidb64': uidb64, 'token': token}
-            )
-            activation_url = f'{settings.SITE_DOMAIN}{activation_link}'
-            send_custom_email(
-                subject="Activate Your Account",
-                template_name="account/activation_email.html",
-                context={
-                    "user": user,
-                    "activation_url": activation_url,
-                },
-                to_email=user.email,
-            )
-
-            messages.success(
-                request,
-                'Registration successful! Please check your email (or server logs) to activate your account.',
-            )
+            messages.success(request, 'Registration successful! Your account has been auto-activated. You can now login.')
             return redirect('login')
     else:
         form = RecruiterSignUpForm()
